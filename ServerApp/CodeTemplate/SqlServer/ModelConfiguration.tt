@@ -1,0 +1,65 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Data.Linq"#>
+<#@ assembly name="System.Data.Common"#>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="System.Xml"#>
+<#@ assembly name="System.Xml.Linq"#>
+<#@ import namespace="System" #>
+<#@ import namespace="System.CodeDom"#>
+<#@ import namespace="System.CodeDom.Compiler"#>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data"#>
+<#@ import namespace="System.Data.Linq"#>
+<#@ import namespace="System.Data.Linq.Mapping"#>
+<#@ import namespace="System.IO"#>
+<#@ import namespace="System.Linq"#>
+<#@ import namespace="System.Reflection"#>
+<#@ import namespace="System.Text"#>
+<#@ import namespace="System.Xml.Linq"#>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating"#>
+<#@ output encoding="utf-8" #>
+<#
+    var tableName = "Member";
+    var removePrefix = "epu_";
+    var separator = '_';
+    var connectionString = "Server=172.18.50.8;Database=PlayerAuctions;Uid=PALite2008;password=pe846$qH3#;TrustServerCertificate=true";
+	var dbProvider = new SqlServerProvider(connectionString);
+    var className = dbProvider.ToClassName(tableName, removePrefix, separator);
+	var tableInfo = dbProvider.GetTableInfo(tableName);
+	var columnList = dbProvider.GetColumnList(tableName);
+#>
+using PaymentCenter.Domain.Models;
+
+namespace PaymentCenter;
+
+class ModelConfiguration : IModelConfiguration
+{
+    public void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<<#=className#>>(f =>
+        {
+<#
+    foreach(ColumnInfo columnInfo in columnList)
+    {
+        var propertyName = columnInfo.ColumnName;
+        if(columnInfo.IsPrimaryKey)
+        {#>
+            f.ToTable("<#=tableName#>").HasKey(t => t.<#=propertyName#>);
+<#      }
+    }#>
+<#
+    foreach(ColumnInfo columnInfo in columnList)
+    {
+        var propertyName = columnInfo.ColumnName;
+#>
+            f.Property(t => t.<#=propertyName#>).HasColumnName("<#=propertyName#>").HasColumnType("<#=columnInfo.DataType#>");
+<#}#>
+        });
+    }
+}
+<#@ include file="$(ProjectDir)\Manager.ttinclude" once="true"#>
+<#@ include file="$(ProjectDir)\DbEntitries.ttinclude" once="true"#>
+<#@ include file="SqlServerProvider.ttinclude" once="true"#>

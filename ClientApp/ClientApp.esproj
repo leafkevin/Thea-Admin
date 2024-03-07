@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.128-alpha">
+  <PropertyGroup>
+    <StartupCommand>pnpm run dev</StartupCommand>
+    <JavaScriptTestRoot>.\</JavaScriptTestRoot>
+    <JavaScriptTestFramework>Jest</JavaScriptTestFramework>
+    <!-- Allows the build (or compile) script located on package.json to run on Build -->
+    <ShouldRunBuildScript>false</ShouldRunBuildScript>
+    <!-- Folder where production build objects will be placed -->
+    <PublishAssetsDirectory>$(MSBuildProjectDirectory)\dist</PublishAssetsDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include=".husky\commit-msg" />
+    <None Include=".husky\pre-commit" />
+    <None Include=".husky\_\.gitignore" />
+    <None Include=".husky\_\husky.sh" />
+    <None Include=".vscode\extensions.json" />
+    <None Include=".vscode\settings.json" />
+    <None Include=".vscode\vue3.3.code-snippets" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34601.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "ClientApp", "ClientApp\ClientApp.esproj", "{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheaAdmin", "ServerApp\TheaAdmin\TheaAdmin.csproj", "{EB69055F-E25E-4EF4-AFAB-A549433B6828}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeTemplate", "ServerApp\CodeTemplate\CodeTemplate.csproj", "{82E8F0F0-484A-4D4D-B61F-A968FAE2F9FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thea", "ServerApp\Thea\Thea.csproj", "{B8399220-740A-4E97-944F-4DC0064BA641}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trolley", "ServerApp\Trolley\Trolley.csproj", "{8ED65435-A620-496D-88FC-1AAB4406701C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trolley.MySqlConnector", "ServerApp\Trolley.MySqlConnector\Trolley.MySqlConnector.csproj", "{87B68F7A-5BE9-41A1-9170-A5B28A22FB91}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C322E3-EC22-4CB4-A40C-EF209AB559C2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{EB69055F-E25E-4EF4-AFAB-A549433B6828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB69055F-E25E-4EF4-AFAB-A549433B6828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB69055F-E25E-4EF4-AFAB-A549433B6828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB69055F-E25E-4EF4-AFAB-A549433B6828}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E8F0F0-484A-4D4D-B61F-A968FAE2F9FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E8F0F0-484A-4D4D-B61F-A968FAE2F9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E8F0F0-484A-4D4D-B61F-A968FAE2F9FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E8F0F0-484A-4D4D-B61F-A968FAE2F9FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8399220-740A-4E97-944F-4DC0064BA641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8399220-740A-4E97-944F-4DC0064BA641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8399220-740A-4E97-944F-4DC0064BA641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8399220-740A-4E97-944F-4DC0064BA641}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ED65435-A620-496D-88FC-1AAB4406701C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ED65435-A620-496D-88FC-1AAB4406701C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ED65435-A620-496D-88FC-1AAB4406701C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ED65435-A620-496D-88FC-1AAB4406701C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87B68F7A-5BE9-41A1-9170-A5B28A22FB91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87B68F7A-5BE9-41A1-9170-A5B28A22FB91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87B68F7A-5BE9-41A1-9170-A5B28A22FB91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87B68F7A-5BE9-41A1-9170-A5B28A22FB91}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {844523BE-C18D-4429-848E-851C06FD7C30}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,250 @@
+﻿<#@ assembly name="$(ProjectDir)\Plugins\MySqlConnector.dll" #>
+<#@ import namespace="MySqlConnector" #>
+<#+  
+class MySqlProvider : DbHelper
+{
+    private readonly string connectionString;
+    public MySqlProvider(string connectionString)
+        => this.connectionString = connectionString;
+    public List<TableInfo> GetTableList(string database, string tableNamefilter)
+    {
+        var sql = @"SELECT TABLE_NAME,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='{0}' AND TABLE_NAME LIKE '%{1}%'";
+        sql = string.Format(sql, database, tableNamefilter);
+        var result = new List<TableInfo>();
+        using var connection = new MySqlConnection(this.connectionString);
+        using var command = new MySqlCommand(sql, connection);
+        connection.Open();
+        var reader = command.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.CloseConnection);
+        while (reader.Read())
+        {
+            result.Add(new TableInfo
+            {
+                TableName = this.ToValue<string>(reader[0]),
+                Description = this.ToValue<string>(reader[1])
+            });
+        }
+        reader.Close();
+        connection.Close();
+        return result;
+    }
+    public TableInfo GetTableInfo(string database, string tableName)
+    {
+        var sql = @"SELECT TABLE_NAME,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='{0}' AND TABLE_NAME='{1}'";
+        sql = string.Format(sql, database, tableName);
+        TableInfo result = null;
+        using var connection = new MySqlConnection(this.connectionString);
+        using var command = new MySqlCommand(sql, connection);
+        connection.Open();
+        var reader = command.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.CloseConnection);
+        if (reader.Read())
+        {
+            result = new TableInfo
+            {
+                TableName = this.ToValue<string>(reader[0]),
+                Description = this.ToValue<string>(reader[1])
+            };
+        }
+        reader.Close();
+        connection.Close();
+        return result;
+    }
+    public List<ColumnInfo> GetColumnList(string database, string tableName)
+    {
+        var sql = @"SELECT A.COLUMN_NAME,
+				           A.DATA_TYPE,
+					       A.COLUMN_TYPE,
+				           A.CHARACTER_MAXIMUM_LENGTH,
+				           A.NUMERIC_SCALE,
+				           A.NUMERIC_PRECISION,
+				           A.COLUMN_COMMENT,
+				           A.COLUMN_DEFAULT,
+				           A.COLUMN_KEY,
+				           A.EXTRA,
+				           A.IS_NULLABLE
+				       FROM INFORMATION_SCHEMA.COLUMNS A
+				       WHERE A.TABLE_SCHEMA='{0}' AND A.TABLE_NAME='{1}'";
+
+        sql = String.Format(sql, database, tableName);
+        var result = new List<ColumnInfo>();
+        using var connection = new MySqlConnection(this.connectionString);
+        using var command = new MySqlCommand(sql, connection);
+        connection.Open();
+        using var reader = command.ExecuteReader(CommandBehavior.SequentialAccess | CommandBehavior.CloseConnection);
+        while (reader.Read())
+        {
+            result.Add(new ColumnInfo
+            {
+                ColumnName = this.ToValue<string>(reader[0]),
+                DataType = this.ToValue<string>(reader[1]),
+                ColumnType = this.ToValue<string>(reader[2]),
+                Length = this.ToValue<ulong>(reader[3]),
+                Scale = this.ToValue<int>(reader[4]),
+                Precision = this.ToValue<int>(reader[5]),
+                Description = this.ToValue<string>(reader[6]),
+                DefaultValue = this.ToValue<string>(reader[7]),
+                IsPrimaryKey = this.ToValue<string>(reader[8]) == "PRI",
+                IsIdentity = this.ToValue<string>(reader[9]).Contains("auto_increment"),
+                IsNullable = this.ToValue<string>(reader[10]) == "YES"
+            });
+        }
+        reader.Close();
+        connection.Close();
+        return result;
+    }
+    public string MapMemberType(ColumnInfo columnInfo)
+    {
+        bool isUnsigned = columnInfo.ColumnType.Contains("unsigned");
+        switch (columnInfo.DataType)
+        {
+            case "bit":
+            case "bool": return "bool";
+
+            case "tinyint":   
+                if(columnInfo.ColumnType == "tinyint(1)") return "bool";
+                return isUnsigned ? "byte" : "sbyte";
+            case "smallint": return isUnsigned ? "ushort" : "short";
+            case "mediumint": return isUnsigned ? "uint" : "int";
+            case "int": return isUnsigned ? "uint" : "int";
+            case "bigint": return isUnsigned ? "ulong" : "long";
+
+            case "float": return "float";
+            case "real":
+            case "double": return "double";
+
+            case "numeric":
+            case "smallmoney":
+            case "money":
+            case "decimal": return "decimal";
+
+            case "year": return "int";
+            case "time": return "TimeSpan";
+
+            case "smalldatetime":
+            case "date":
+            case "datetime":
+            case "timestamp": return "DateTime";
+
+            case "tinyblob":
+            case "blob":
+            case "mediumblob":
+            case "longblob":
+            case "image":
+            case "binary":
+            case "varbinary": return "byte[]";
+
+            case "tinytext":
+            case "text":
+            case "mediumtext":
+            case "longtext": return "string";
+
+            case "char": return columnInfo.Length == 36 ? "Guid" : "string";
+            case "varchar": return "string";
+
+            case "guid": return "Guid";
+
+            case "set":
+            case "enum": return "int";
+
+            case "point":
+            case "linestring":
+            case "polygon":
+            case "geometry":
+            case "multipoint":
+            case "multilinestring":
+            case "multipolygon":
+            case "geometrycollection": return "object";
+        }
+        return "string";
+    }
+    public string MapNativeDbType(ColumnInfo columnInfo)
+    {
+        bool isUnsigned = columnInfo.ColumnType.Contains("unsigned");
+        switch (columnInfo.DataType)
+        {
+            case "bit": return "MySqlDbType.Bit";
+
+            case "bool": return "MySqlDbType.Bool";
+
+            case "tinyint": 
+            if(columnInfo.ColumnType == "tinyint(1)") return "MySqlDbType.Bool";
+            return isUnsigned ? "MySqlDbType.UByte" : "MySqlDbType.Byte";
+
+            case "smallint": return isUnsigned ? "MySqlDbType.UInt16" : "MySqlDbType.Int16";
+            case "mediumint": return isUnsigned ? "MySqlDbType.UInt24" : "MySqlDbType.Int24";
+            case "int": return isUnsigned ? "MySqlDbType.UInt32" : "MySqlDbType.Int32";
+            case "bigint": return isUnsigned ? "MySqlDbType.UInt64" : "MySqlDbType.Int64";
+
+            case "float": return "MySqlDbType.Float";
+            case "real":
+            case "double": return "MySqlDbType.Double";
+
+            case "smallmoney":
+            case "money":
+            case "numeric":
+            case "decimal": return "MySqlDbType.Decimal";
+
+            case "year": return "MySqlDbType.Year";
+            case "time": return "MySqlDbType.Time";
+            case "date": return "MySqlDbType.Date";
+            case "timestamp": return "MySqlDbType.Timestamp";
+            case "datetime": return "MySqlDbType.DateTime";
+
+            case "tinyblob": return "MySqlDbType.TinyBlob";
+            case "blob": return "MySqlDbType.Blob";
+            case "mediumblob": return "MySqlDbType.MediumBlob";
+            case "longblob": return "MySqlDbType.LongBlob";
+
+            case "binary": return "MySqlDbType.Binary";
+            case "varbinary": return "MySqlDbType.VarBinary";
+
+            case "tinytext": return "MySqlDbType.TinyText";
+            case "text": return "MySqlDbType.Text";
+            case "mediumtext": return "MySqlDbType.MediumText";
+            case "longtext": return "MySqlDbType.LongText";
+
+            case "char": return columnInfo.Length == 36 ? "MySqlDbType.Guid" : "MySqlDbType.String";
+            case "varchar": return "MySqlDbType.VarChar";
+
+            case "set": return "MySqlDbType.Set";
+            case "enum": return "MySqlDbType.Enum";
+
+            case "point":
+            case "linestring":
+            case "polygon":
+            case "geometry":
+            case "multipoint":
+            case "multilinestring":
+            case "multipolygon":
+            case "geometrycollection": return "MySqlDbType.Geometry";
+        }
+        return "MySqlDbType.String";
+    }
+    public string MapDefaultDbType(Type memberType)
+    {
+        switch (Type.GetTypeCode(memberType))
+        {
+            case TypeCode.Boolean: return "tinyint(1)";
+            case TypeCode.SByte: return "tinyint";
+            case TypeCode.Byte: return "unsigned tinyint";
+            case TypeCode.Int16: return "smallint";
+            case TypeCode.UInt16: return "unsigned smallint";
+            case TypeCode.Int32: return "int";
+            case TypeCode.UInt32: return "unsigned int";
+            case TypeCode.Int64: return "bigint";
+            case TypeCode.UInt64: return "unsigned bigint";
+            case TypeCode.Single: return "float";
+            case TypeCode.Double: return "double";
+            case TypeCode.Decimal: return "decimal";
+            case TypeCode.DateTime: return "datetime";
+
+            case TypeCode.Char: return "char(1)";
+            case TypeCode.String: return "varchar(100)";
+        }
+        if (memberType == typeof(Guid))
+            return "char(36)";
+        if (memberType == typeof(byte[]))
+            return "varbinary(1000)";
+        return "varchar(100)";
+    }
+}
+#>
