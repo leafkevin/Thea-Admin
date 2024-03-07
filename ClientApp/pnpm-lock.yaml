@@ -127,9 +127,6 @@ devDependencies:
   eslint-plugin-vue:
     specifier: ^9.19.2
     version: registry.npmmirror.com/eslint-plugin-vue@9.19.2(eslint@8.56.0)
-  husky:
-    specifier: ^8.0.3
-    version: 8.0.3
   lint-staged:
     specifier: ^15.2.0
     version: registry.npmmirror.com/lint-staged@15.2.0
@@ -3378,12 +3375,6 @@ packages:
       domhandler: 5.0.3
       domutils: 3.0.1
       entities: 4.4.0
-    dev: true
-
-  /husky@8.0.3:
-    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
-    engines: {node: '>=14'}
-    hasBin: true
     dev: true
 
   /i18next@20.6.1:
