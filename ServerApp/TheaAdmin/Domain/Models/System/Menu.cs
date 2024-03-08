@@ -12,13 +12,17 @@ public class Menu
     /// </summary>
     public string MenuId { get; set; }
     /// <summary>
+    /// 菜单名称
+    /// </summary>
+    public string MenuName { get; set; }
+    /// <summary>
     /// 路由名称
     /// </summary>
     public string RouteName { get; set; }
     /// <summary>
-    /// 菜单名称
+    /// 路由地址
     /// </summary>
-    public string MenuName { get; set; }
+    public string RouteUrl { get; set; }
     /// <summary>
     /// 描述
     /// </summary>
@@ -36,13 +40,17 @@ public class Menu
     /// </summary>
     public string Icon { get; set; }
     /// <summary>
+    /// 是否静态路由
+    /// </summary>
+    public bool IsStatic { get; set; }
+    /// <summary>
     /// 序号
     /// </summary>
     public int Sequence { get; set; }
     /// <summary>
     /// 状态
     /// </summary>
-    public sbyte Status { get; set; }
+    public DataStatus Status { get; set; }
     /// <summary>
     /// 创建人
     /// </summary>

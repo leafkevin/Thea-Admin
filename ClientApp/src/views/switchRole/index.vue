@@ -68,7 +68,7 @@
         if (item.meta.isFull) {
           router.addRoute(item as unknown as RouteRecordRaw);
         } else {
-          router.addRoute("layout", item as unknown as RouteRecordRaw);
+          router.addRoute("Layout", item as unknown as RouteRecordRaw);
         }
       });
     }

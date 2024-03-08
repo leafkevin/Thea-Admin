@@ -7,6 +7,7 @@ import { HOME_URL, LOGIN_URL, SWITCH_ROLE_URL } from "@/config";
 export const staticRouter: RouteRecordRaw[] = [
   {
     path: "/",
+    name: "Home",
     redirect: HOME_URL
   },
   {
@@ -14,7 +15,8 @@ export const staticRouter: RouteRecordRaw[] = [
     name: "Login",
     component: () => import("@/views/login/index.vue"),
     meta: {
-      title: "登录"
+      title: "登录",
+      isKeepAlive: false
     }
   },
   {
@@ -22,12 +24,14 @@ export const staticRouter: RouteRecordRaw[] = [
     name: "SwitchRole",
     component: () => import("@/views/switchRole/index.vue"),
     meta: {
-      title: "切换角色"
+      title: "切换角色",
+      isAffix: true,
+      isKeepAlive: false
     }
   },
   {
     path: "/layout",
-    name: "layout",
+    name: "Layout",
     component: () => import("@/layouts/index.vue"),
     // component: () => import("@/layouts/indexAsync.vue"),
     redirect: HOME_URL,

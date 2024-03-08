@@ -73,6 +73,7 @@ router.beforeEach(async to => {
     return { name: "Login", replace: true };
   }
   if (!userStore.hasMenuRoutes && to.path !== SWITCH_ROLE_URL) return { name: "switchRole", replace: true };
+
   return true;
 });
 

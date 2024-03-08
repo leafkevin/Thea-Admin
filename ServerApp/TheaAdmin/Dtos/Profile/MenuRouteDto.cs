@@ -15,6 +15,8 @@ public class MenuRouteDto
     public string Redirect { get; set; }
     public MenuRouteMetaDto Meta { get; set; }
     public List<MenuRouteDto> Children { get; set; }
+    [JsonIgnore]
+    public int Sequence { get; set; }
 }
 public class MenuRouteMetaDto
 {

@@ -44,9 +44,9 @@ public class PageRoute
     /// </summary>
     public string Icon { get; set; }
     /// <summary>
-    /// 是否需要验证权限
+    /// 是否静态路由
     /// </summary>
-    public bool IsNeedAuth { get; set; }
+    public bool IsStatic { get; set; }
     /// <summary>
     /// 是否需要隐藏
     /// </summary>
@@ -70,7 +70,7 @@ public class PageRoute
     /// <summary>
     /// 状态
     /// </summary>
-    public sbyte Status { get; set; }
+    public DataStatus Status { get; set; }
     /// <summary>
     /// 创建人
     /// </summary>

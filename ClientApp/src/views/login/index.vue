@@ -106,7 +106,8 @@
           router.push({ name: "SwitchRole", replace: true });
           return;
         }
-
+        const routes = router.getRoutes();
+        console.log(routes.length);
         //返回了菜单和路由，就更新路由
         if (userStore.hasMenuRoutes) {
           userStore.flatMenuRoutes.forEach(item => {
@@ -117,7 +118,7 @@
             if (item.meta.isFull) {
               router.addRoute(item as unknown as RouteRecordRaw);
             } else {
-              router.addRoute("layout", item as unknown as RouteRecordRaw);
+              router.addRoute("Layout", item as unknown as RouteRecordRaw);
             }
           });
         }
