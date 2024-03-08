@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MySalon.Domain.Models;
+namespace TheaAdmin.Domain.Models;
 
 /// <summary>
 /// 用户表,所有登陆系统的用户信息

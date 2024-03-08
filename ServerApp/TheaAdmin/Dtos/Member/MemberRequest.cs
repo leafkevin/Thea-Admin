@@ -1,7 +1,7 @@
-﻿using MySalon.Domain;
+﻿using TheaAdmin.Domain;
 using System;
 
-namespace MySalon.Dtos;
+namespace TheaAdmin.Dtos;
 
 public class MemberRequest
 {

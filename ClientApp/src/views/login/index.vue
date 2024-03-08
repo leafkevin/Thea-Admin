@@ -90,8 +90,7 @@
       loading.value = true;
       try {
         // 1.执行登录接口
-        const resp = await loginApi(loginForm.value);
-        const response = resp.data;
+        const response = await loginApi(loginForm.value);
         if (!response.isSuccess) {
           ElNotification({
             title: "登录失败",
@@ -104,7 +103,7 @@
 
         //需要转到选择角色页面 code=9
         if (response.code > 0) {
-          router.push({ name: "SwitchRole" });
+          router.push({ name: "SwitchRole", replace: true });
           return;
         }
 

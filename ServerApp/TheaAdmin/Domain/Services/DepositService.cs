@@ -1,11 +1,11 @@
-﻿using MySalon.Domain.Models;
-using MySalon.Dtos;
+﻿using TheaAdmin.Domain.Models;
+using TheaAdmin.Dtos;
 using System.Threading.Tasks;
 using System;
 using Thea;
 using Trolley;
 
-namespace MySalon.Domain.Services;
+namespace TheaAdmin.Domain.Services;
 
 public class DepositService
 {

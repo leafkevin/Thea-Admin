@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySalon.Domain.Services;
-using MySalon.Dtos;
+using TheaAdmin.Domain.Services;
+using TheaAdmin.Dtos;
 using System.Threading.Tasks;
 using Thea;
 
-namespace MySalon.Controllers;
+namespace TheaAdmin.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]

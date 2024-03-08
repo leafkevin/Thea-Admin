@@ -39,6 +39,8 @@ class RequestHttp {
   public constructor(config: AxiosRequestConfig) {
     // instantiation
     this.service = axios.create(config);
+    this.setRequestInterceptors();
+    this.setResponseInterceptors();
   }
 
   /** 格式化token（jwt格式） */
@@ -46,7 +48,7 @@ class RequestHttp {
     return "Bearer " + token;
   }
   /** 请求拦截 */
-  private httpInterceptorsRequest(): void {
+  private setRequestInterceptors(): void {
     this.service.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const userStore = useUserStore();
@@ -62,7 +64,7 @@ class RequestHttp {
   }
 
   /** 响应拦截 */
-  private httpInterceptorsResponse(): void {
+  private setResponseInterceptors(): void {
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
         const { status, data } = response;
@@ -130,28 +132,19 @@ class RequestHttp {
       }
     );
   }
-  /** 重连原始请求 */
-  private retryOriginalRequest(config: InternalAxiosRequestConfig) {
-    return new Promise(resolve => {
-      RequestHttp.requests.push((token: string) => {
-        config.headers["Authorization"] = this.formatToken(token);
-        resolve(config);
-      });
-    });
-  }
   /**
    * @description 常用请求方法封装
    */
-  get(url: string, params?: object): Promise<AxiosResponse<IResponse>> {
+  get(url: string, params?: object): Promise<IResponse> {
     return this.service.get(url, params);
   }
-  post(url: string, params?: object): Promise<AxiosResponse<IResponse>> {
+  post(url: string, params?: object): Promise<IResponse> {
     return this.service.post(url, params);
   }
-  put(url: string, params?: object): Promise<AxiosResponse<IResponse>> {
+  put(url: string, params?: object): Promise<IResponse> {
     return this.service.put(url, params);
   }
-  delete(url: string, params?: object): Promise<AxiosResponse<IResponse>> {
+  delete(url: string, params?: object): Promise<IResponse> {
     return this.service.delete(url, params);
   }
   download(url: string, params?: object): Promise<BlobPart> {

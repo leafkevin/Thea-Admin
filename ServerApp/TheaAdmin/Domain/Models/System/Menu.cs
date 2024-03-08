@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MySalon.Domain.Models;
+namespace TheaAdmin.Domain.Models;
 
 /// <summary>
 /// 菜单表
@@ -31,10 +31,6 @@ public class Menu
     /// 菜单类型
     /// </summary>
     public MenuType MenuType { get; set; }
-    /// <summary>
-    /// 路由ID
-    /// </summary>
-    public string RouteId { get; set; }
     /// <summary>
     /// 图标
     /// </summary>

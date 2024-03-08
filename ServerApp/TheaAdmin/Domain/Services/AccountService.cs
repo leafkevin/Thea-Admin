@@ -1,12 +1,12 @@
-﻿using MySalon.Domain.Models;
-using MySalon.Dtos;
+﻿using TheaAdmin.Domain.Models;
+using TheaAdmin.Dtos;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Thea;
 using Trolley;
 
-namespace MySalon.Domain.Services;
+namespace TheaAdmin.Domain.Services;
 
 public class AccountService
 {

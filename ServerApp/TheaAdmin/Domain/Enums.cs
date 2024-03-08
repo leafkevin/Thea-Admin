@@ -1,4 +1,4 @@
-﻿namespace MySalon.Domain;
+﻿namespace TheaAdmin.Domain;
 
 public enum DataStatus : byte
 {

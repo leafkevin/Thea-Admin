@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
 import { refreshToken } from "@/api/account";
 import { useUserStore } from "@/stores/account";
-import { ROUTER_WHITE_LIST } from "@/config";
-import { staticRouter, errorRouter } from "@/routers/modules/staticRouter";
+import { LOGIN_URL, SWITCH_ROLE_URL } from "@/config";
+import { staticRouter, errorRouter } from "@/routers/staticRouter";
 import NProgress from "@/utils/nprogress";
 import { ElNotification } from "element-plus";
 
@@ -48,8 +48,8 @@ router.beforeEach(async to => {
   const title = import.meta.env.VITE_GLOB_APP_TITLE;
   document.title = to.meta.title ? `${to.meta.title} - ${title}` : title;
 
-  // 4.判断访问页面是否在路由白名单地址(静态路由)中，如果存在直接放行
-  if (ROUTER_WHITE_LIST.includes(to.path)) return true;
+  // 4.判断是否登陆页面，直接放行
+  if (to.path == LOGIN_URL) return true;
 
   // 5.判断是否有 Token，没有重定向到 login 页面
   if (!userStore.isAuthorized) return { name: "Login", replace: true };
@@ -72,7 +72,7 @@ router.beforeEach(async to => {
     });
     return { name: "Login", replace: true };
   }
-  if (!userStore.hasMenuRoutes) return { name: "switchRole", replace: true };
+  if (!userStore.hasMenuRoutes && to.path !== SWITCH_ROLE_URL) return { name: "switchRole", replace: true };
   return true;
 });
 

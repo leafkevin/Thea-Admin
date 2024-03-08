@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from "vue-router";
-import { HOME_URL, LOGIN_URL } from "@/config";
+import { HOME_URL, LOGIN_URL, SWITCH_ROLE_URL } from "@/config";
 
 /**
  * staticRouter (静态路由)
@@ -18,7 +18,7 @@ export const staticRouter: RouteRecordRaw[] = [
     }
   },
   {
-    path: LOGIN_URL,
+    path: SWITCH_ROLE_URL,
     name: "SwitchRole",
     component: () => import("@/views/switchRole/index.vue"),
     meta: {

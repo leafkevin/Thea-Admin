@@ -1,4 +1,4 @@
-﻿using MySalon.Domain;
+﻿using TheaAdmin.Domain;
 
 namespace Thea;
 

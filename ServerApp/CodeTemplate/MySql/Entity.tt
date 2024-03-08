@@ -27,7 +27,7 @@
     var manager = Manager.Create(Host, GenerationEnvironment);
 
     var databaseName = "salon";
-	var tableName = "sys_role";
+	var tableName = "sys_menu";
     var removePrefix = "sys_";
     var separator = '_';
     var className = dbProvider.ToClassName(tableName, removePrefix, separator);
@@ -37,7 +37,7 @@
 #>
 using System;
 
-namespace MySalon.Domain.Models;
+namespace TheaAdmin.Domain.Models;
 
 /// <summary>
 /// <#=tableInfo.Description#>

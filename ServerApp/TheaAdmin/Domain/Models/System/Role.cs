@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MySalon.Domain.Models;
+namespace TheaAdmin.Domain.Models;
 
 /// <summary>
 /// 角色表

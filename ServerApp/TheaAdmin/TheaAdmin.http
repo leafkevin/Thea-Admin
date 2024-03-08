@@ -1,6 +1,6 @@
-@MySalon_HostAddress = http://localhost:5209
+@TheaAdmin_HostAddress = http://localhost:5209
 
-GET {{MySalon_HostAddress}}/weatherforecast/
+GET {{TheaAdmin_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

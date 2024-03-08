@@ -1,10 +1,10 @@
-﻿using MySalon.Domain.Models;
+﻿using TheaAdmin.Domain.Models;
 using System.Threading.Tasks;
 using System;
 using Thea;
 using Trolley;
 
-namespace MySalon.Domain.Services;
+namespace TheaAdmin.Domain.Services;
 
 public class OrderService
 {

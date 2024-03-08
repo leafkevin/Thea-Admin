@@ -1,8 +1,8 @@
-﻿using MySalon.Domain.Models;
-using MySqlConnector;
+﻿using MySqlConnector;
+using TheaAdmin.Domain.Models;
 using Trolley;
 
-namespace MySalon.Domain;
+namespace TheaAdmin.Domain;
 
 class ModelConfiguration : IModelConfiguration
 {
@@ -87,7 +87,6 @@ class ModelConfiguration : IModelConfiguration
             f.Member(t => t.Description).Field(nameof(Menu.Description)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.ParentId).Field(nameof(Menu.ParentId)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.MenuType).Field(nameof(Menu.MenuType)).NativeDbType(MySqlDbType.UByte);
-            f.Member(t => t.RouteId).Field(nameof(Menu.RouteId)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.Icon).Field(nameof(Menu.Icon)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.Sequence).Field(nameof(Menu.Sequence)).NativeDbType(MySqlDbType.Int32);
             f.Member(t => t.Status).Field(nameof(Menu.Status)).NativeDbType(MySqlDbType.UByte).Required();

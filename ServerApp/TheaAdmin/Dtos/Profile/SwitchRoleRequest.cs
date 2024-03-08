@@ -1,4 +1,4 @@
-﻿namespace MySalon.Dtos.Authorization;
+﻿namespace TheaAdmin.Dtos.Authorization;
 
 public class SwitchRoleRequest
 {

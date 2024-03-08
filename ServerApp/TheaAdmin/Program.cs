@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MySalon;
+using TheaAdmin;
 using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Text.Json;

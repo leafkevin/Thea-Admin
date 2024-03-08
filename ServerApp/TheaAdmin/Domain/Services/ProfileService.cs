@@ -1,13 +1,14 @@
-﻿using MySalon.Domain.Models;
-using MySalon.Dtos;
+﻿using TheaAdmin.Domain.Models;
+using TheaAdmin.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Thea;
 using Trolley;
+using Microsoft.Extensions.Logging;
 
-namespace MySalon.Domain.Services;
+namespace TheaAdmin.Domain.Services;
 
 public class ProfileService
 {
@@ -88,13 +89,14 @@ public class ProfileService
             .From<Menu>()
             .InnerJoin(cteQuery, (a, b) => a.MenuId == b.MenuId)
             .Select((a, b) => a)
+            .OrderBy(f => f.Sequence)
             .ToListAsync();
         if (menuItems.Count <= 0)
             return TheaResponse.Fail(1, "没有配置任何菜单数据");
 
         var rootId = menuItems.First().ParentId;
-        var pageIds = menuItems.FindAll(f => f.MenuType == MenuType.Page).Select(f => f.RouteId).ToList();
-        var myPages = await repository.QueryAsync<PageRoute>(f => pageIds.Contains(f.RouteId));
+        var menuIds = menuItems.FindAll(f => f.MenuType == MenuType.Page).Select(f => f.MenuId).ToList();
+        var myPages = await repository.QueryAsync<PageRoute>(f => menuIds.Contains(f.MenuId));
         var result = new List<MenuRouteDto>();
         var myMenus = menuItems.FindAll(f => f.ParentId == rootId);
         var menuRoutes = new List<MenuRouteDto>();
@@ -123,51 +125,55 @@ public class ProfileService
     {
         foreach (var myMenu in myMenus)
         {
-            string path = null;
-            PageRoute myPage = null;
-            string redirect = null;
-            string linkUrl = null;
-            string menuPath = null;
-            if (myMenu.MenuType == MenuType.Page)
-            {
-                myPage = pages.Find(f => f.MenuId == myMenu.MenuId);
-                if (myPage != null)
-                {
-                    path = myPage.RouteUrl;
-                    if (myPage.IsLink) linkUrl = myPage.RedirectUrl;
-                    else redirect = myPage.RedirectUrl;
-                    if (myPage.IsHidden)
-                        menuPath = myPage.RouteUrl;
-                }
-            }
-            else path = $"{parentPath}{myMenu.RouteName}";
-
             var menuRoute = new MenuRouteDto
             {
                 MenuId = myMenu.MenuId,
                 ParentId = myMenu.ParentId,
-                Path = path,
-                Redirect = redirect,
-                Component = myPage?.Component,
                 Name = myMenu.RouteName,
                 Meta = new MenuRouteMetaDto
                 {
                     Title = myMenu.MenuName,
-                    Icon = myMenu.Icon,
-                    IsHidden = myPage?.IsHidden ?? false,
-                    IsAffix = myPage?.IsAffix ?? false,
-                    IsFull = myPage?.IsFull ?? false,
-                    LinkUrl = linkUrl,
-                    MenuPath = menuPath,
-                    IsKeepAlive = myPage?.IsFull ?? true
+                    Icon = myMenu.Icon
                 }
             };
             menuRoutes.Add(menuRoute);
-            var children = menuItems.FindAll(f => f.ParentId == myMenu.MenuId);
-            if (children != null && children.Count > 0)
+            if (myMenu.MenuType == MenuType.Page)
             {
                 menuRoute.Children = new();
-                this.AddChildren(path, children, menuRoute.Children, menuItems, pages);
+                var myPages = pages.FindAll(f => f.MenuId == myMenu.MenuId);
+                foreach (var myPage in myPages)
+                {
+                    var myPageRoute = new MenuRouteDto
+                    {
+                        Name = myPage.RouteName,
+                        Path = myPage.RouteUrl,
+                        Component = myPage.Component,
+                        Meta = new MenuRouteMetaDto
+                        {
+                            Title = myPage.RouteTitle,
+                            Icon = myPage.Icon,
+                            MenuPath = menuRoute.Path,
+                            IsAffix = myPage.IsAffix,
+                            IsHidden = myPage.IsHidden,
+                            IsFull = myPage.IsFull,
+                            IsKeepAlive = myPage.IsFull
+                        }
+                    };
+
+                    if (myPage.IsLink) myPageRoute.Meta.LinkUrl = myPage.RedirectUrl;
+                    else myPageRoute.Redirect = myPage.RedirectUrl;
+                    menuRoute.Children.Add(myPageRoute);
+                }
+            }
+            else
+            {
+                menuRoute.Path = $"{parentPath}{myMenu.RouteName}";
+                var children = menuItems.FindAll(f => f.ParentId == myMenu.MenuId);
+                if (children != null && children.Count > 0)
+                {
+                    menuRoute.Children = new();
+                    this.AddChildren(menuRoute.Path, children, menuRoute.Children, menuItems, pages);
+                }
             }
         }
     }

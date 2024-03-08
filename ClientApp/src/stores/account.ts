@@ -26,10 +26,12 @@ export const useUserStore = defineStore(
       refreshToken.value = state.refreshToken;
       roles.value = state.roles;
       expiresTime.value = state.expires;
-      menuRoutes.value = state.menuRoutes;
-      breadcrumbs.value = getBreadcrumbs(state.menuRoutes) as IMenuRoute[];
-      showMenuRoutes.value = getShowMenuRoutes(state.menuRoutes);
-      flatMenuRoutes.value = getFlatMenuRoutes(state.menuRoutes);
+      if (state.menuRoutes) {
+        menuRoutes.value = state.menuRoutes;
+        breadcrumbs.value = getBreadcrumbs(state.menuRoutes) as IMenuRoute[];
+        showMenuRoutes.value = getShowMenuRoutes(state.menuRoutes);
+        flatMenuRoutes.value = getFlatMenuRoutes(state.menuRoutes);
+      }
     }
     function clearState() {
       userId.value = undefined;

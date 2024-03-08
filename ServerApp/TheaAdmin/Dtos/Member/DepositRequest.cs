@@ -1,4 +1,4 @@
-﻿namespace MySalon.Dtos;
+﻿namespace TheaAdmin.Dtos;
 
 public class DepositRequest
 {

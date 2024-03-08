@@ -16,9 +16,20 @@
   import { ref, reactive, onMounted } from "vue";
   import { IRoleState } from "./types";
   import { ColumnProps } from "@/components/ProTable/interface/index";
-  import { getMyRoles as getMyRolesApi, switchRole as switchRoleApi } from "@/api/account";
+  import { getMyRoles, switchRole as switchRoleApi } from "@/api/account";
+  import { RouteRecordRaw, useRouter } from "vue-router";
+  import { getTimeState } from "@/utils";
+  import { useUserStore } from "@/stores/account";
+  import { useTabPageStore } from "@/stores/tabPages";
+  import { useKeepAliveStore } from "@/stores/keepAlive";
   import { ElNotification } from "element-plus";
   import { Check } from "@element-plus/icons-vue";
+
+  const router = useRouter();
+  const userStore = useUserStore();
+  const tabPageStore = useTabPageStore();
+  const keepAliveStore = useKeepAliveStore();
+  const modules = import.meta.glob("@/views/**/*.vue");
   const dataList = ref<IRoleState[]>([]);
 
   // 表格配置项
@@ -30,8 +41,7 @@
   ]);
 
   const switchRole = async (row: IRoleState) => {
-    const resp = await switchRoleApi({ roleId: row.roleId });
-    const response = resp.data;
+    const response = await switchRoleApi({ roleId: row.roleId });
     if (!response.isSuccess) {
       ElNotification({
         title: "切换角色失败",
@@ -39,11 +49,45 @@
         type: "error"
       });
     }
-    await queryList();
+    const userState = response.data as IUserState;
+    userStore.setState(userState);
+
+    //需要转到选择角色页面 code=9
+    if (response.code > 0) {
+      router.push({ name: "SwitchRole", replace: true });
+      return;
+    }
+
+    //返回了菜单和路由，就更新路由
+    if (userStore.hasMenuRoutes) {
+      userStore.flatMenuRoutes.forEach(item => {
+        item.children && delete item.children;
+        if (item.component && typeof item.component == "string") {
+          item.component = modules["/src/views" + item.component + ".vue"];
+        }
+        if (item.meta.isFull) {
+          router.addRoute(item as unknown as RouteRecordRaw);
+        } else {
+          router.addRoute("layout", item as unknown as RouteRecordRaw);
+        }
+      });
+    }
+
+    // 3.清空 tabs、keepAlive 数据
+    tabPageStore.setTabPages([]);
+    keepAliveStore.setKeepAliveNames([]);
+
+    // 4.跳转到首页
+    router.push({ name: "Home" });
+    ElNotification({
+      title: getTimeState(),
+      message: `登录成功，欢迎${userState.userName}`,
+      type: "success",
+      duration: 3000
+    });
   };
   const queryList = async () => {
-    const resp = await getMyRolesApi();
-    const response = resp.data;
+    const response = await getMyRoles();
     if (!response.isSuccess) {
       ElNotification({
         title: "获取角色失败",

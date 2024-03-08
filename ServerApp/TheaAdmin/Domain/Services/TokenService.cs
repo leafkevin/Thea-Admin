@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Thea;
 
-namespace MySalon.Domain.Services;
+namespace TheaAdmin.Domain.Services;
 
 public class TokenService
 {

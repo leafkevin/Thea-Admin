@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MySalon.Domain.Models;
-using MySalon.Dtos;
+using TheaAdmin.Domain.Models;
+using TheaAdmin.Dtos;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using Thea;
 using Trolley;
 
-namespace MySalon.Controllers;
+namespace TheaAdmin.Controllers;
 
 [ApiController, Authorize]
 [Route("[controller]/[action]")]

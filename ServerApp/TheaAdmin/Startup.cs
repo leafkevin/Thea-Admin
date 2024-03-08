@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using MySalon.Domain;
-using MySalon.Domain.Services;
+using TheaAdmin.Domain;
+using TheaAdmin.Domain.Services;
 using Trolley;
 using Trolley.MySqlConnector;
 
-namespace MySalon;
+namespace TheaAdmin;
 
 public static class Startup
 {

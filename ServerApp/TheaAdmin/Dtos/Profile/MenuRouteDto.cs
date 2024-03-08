@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace MySalon.Dtos;
+namespace TheaAdmin.Dtos;
 
 public class MenuRouteDto
 {
