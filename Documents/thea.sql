@@ -2,13 +2,13 @@
  Navicat Premium Data Transfer
 
  Source Server         : mariadb
- Source Server Type    : MariaDB
- Source Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
+ Source Server Type    : MySQL
+ Source Server Version : 110003
  Source Host           : localhost:3306
  Source Schema         : salon
 
- Target Server Type    : MariaDB
- Target Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
+ Target Server Type    : MySQL
+ Target Server Version : 110003
  File Encoding         : 65001
 
  Date: 10/03/2024 14:52:54
@@ -50,13 +50,13 @@ CREATE TABLE `mos_deposit`  (
   `BeginBalance` double(10, 2) NULL DEFAULT NULL COMMENT '充值前余额',
   `EndBalance` double(10, 2) NULL DEFAULT NULL COMMENT '充值后余额',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `Status` tinyint(4) NOT NULL COMMENT '状态',
+  `Status` tinyint NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`DepositId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '充值表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '充值表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mos_deposit
@@ -71,15 +71,15 @@ CREATE TABLE `mos_member`  (
   `MemberName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '姓名',
   `Mobile` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '手机号码',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `Gender` tinyint(4) NULL DEFAULT NULL COMMENT '性别',
+  `Gender` tinyint NULL DEFAULT NULL COMMENT '性别',
   `Balance` double(10, 2) NULL DEFAULT NULL COMMENT '余额',
-  `Status` tinyint(4) NOT NULL COMMENT '状态',
+  `Status` tinyint NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`MemberId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mos_member
@@ -100,13 +100,13 @@ CREATE TABLE `mos_order`  (
   `IsAppointed` tinyint(1) NULL DEFAULT 0 COMMENT '是否指定理发师',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
   `Amount` double(10, 2) NULL DEFAULT NULL COMMENT '消费余额',
-  `Status` tinyint(4) NOT NULL COMMENT '状态',
+  `Status` tinyint NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`OrderId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员订单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mos_order
@@ -127,13 +127,13 @@ CREATE TABLE `mos_stylist`  (
   `Password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
   `Salt` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '盐',
   `LockoutEnd` datetime NULL DEFAULT NULL COMMENT '解锁时间',
-  `Status` tinyint(4) NOT NULL COMMENT '状态',
+  `Status` tinyint NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`UserId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of mos_stylist
@@ -152,20 +152,20 @@ CREATE TABLE `sys_menu`  (
   `Description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
   `ParentId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上级菜单ID',
   `MenuType` tinyint(4) NULL DEFAULT NULL COMMENT '菜单类型',
-  `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `RouteId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '路由ID',
   `IsStatic` tinyint(1) NULL DEFAULT 0 COMMENT '是否静态路由',
   `Sequence` int(11) NULL DEFAULT NULL COMMENT '序号',
   `Status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
+  `Status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`MenuId`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
--- ----------------------------
 INSERT INTO `sys_menu` VALUES ('1', '首页', 'home', '/home', '/home/index', NULL, 'AdminRoot', 3, 'HomeFilled', 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_menu` VALUES ('2', '会员管理', 'memberMgt', '/memberMgt', '/member/index', NULL, 'AdminRoot', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_menu` VALUES ('21', '会员列表', 'memberList', '/member', NULL, NULL, '2', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
@@ -176,6 +176,7 @@ INSERT INTO `sys_menu` VALUES ('92', '角色管理', 'roleList', '/role', NULL, 
 INSERT INTO `sys_menu` VALUES ('93', '菜单管理', 'menuList', '/menu', NULL, NULL, '9', 3, 'UserFilled', 0, 3, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_menu` VALUES ('94', '授权管理', 'authList', '/auth', NULL, '给用户分配角色，并分配操作菜单', '9', 3, 'UserFilled', 0, 4, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_menu` VALUES ('AdminRoot', '管理员角色根菜单', 'AdminRoot', '/', NULL, NULL, NULL, 1, NULL, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('AdminRoot', 'AdminRoot', '管理员角色根菜单', NULL, NULL, 1, NULL, NULL, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -185,13 +186,13 @@ CREATE TABLE `sys_role`  (
   `RoleId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
   `RoleName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `Status` tinyint(4) NOT NULL COMMENT '状态',
+  `Status` tinyint NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`RoleId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -205,9 +206,9 @@ CREATE TABLE `sys_role_menu`  (
   `RoleId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
   `MenuId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单ID',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`RoleId`, `MenuId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -234,13 +235,13 @@ CREATE TABLE `sys_route`  (
   `IsFull` tinyint(1) NULL DEFAULT 0 COMMENT '是否全屏显示',
   `IsAffix` tinyint(1) NULL DEFAULT 0 COMMENT '是否固定标签页',
   `IsKeepAlive` tinyint(1) NULL DEFAULT 1 COMMENT '是否缓存',
-  `Status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
+  `Status` tinyint NOT NULL DEFAULT 1 COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`RouteId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '页面路由表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '页面路由表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_route
@@ -278,13 +279,13 @@ CREATE TABLE `sys_user`  (
   `Password` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
   `Salt` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '盐',
   `LockoutEnd` datetime NULL DEFAULT NULL COMMENT '解锁时间',
-  `Status` tinyint(4) NOT NULL COMMENT '状态',
+  `Status` tinyint NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`UserId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表,所有登陆系统的用户信息' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表,所有登陆系统的用户信息' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
@@ -299,9 +300,9 @@ CREATE TABLE `sys_user_role`  (
   `UserId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户ID',
   `RoleId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
   PRIMARY KEY (`UserId`, `RoleId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_role

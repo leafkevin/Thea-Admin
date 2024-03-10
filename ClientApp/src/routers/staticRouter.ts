@@ -26,7 +26,6 @@ export const staticRouter: RouteRecordRaw[] = [
       isKeepAlive: false
     }
   },
-
   {
     path: "/403",
     name: "403",
