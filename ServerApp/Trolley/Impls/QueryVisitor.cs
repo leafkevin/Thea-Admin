@@ -1160,7 +1160,7 @@ public class QueryVisitor : SqlVisitor, IQueryVisitor
         if (selectExpr != null)
         {
             var toTargetExpr = selectExpr as LambdaExpression;
-			this.ClearUnionSql();
+            this.ClearUnionSql();
             this.InitTableAlias(toTargetExpr);
             var sqlSegment = new SqlSegment { Expression = toTargetExpr.Body };
             switch (toTargetExpr.Body.NodeType)
@@ -1222,18 +1222,27 @@ public class QueryVisitor : SqlVisitor, IQueryVisitor
         if (specialMemberSelector != null)
         {
             var lambdaExpr = specialMemberSelector as LambdaExpression;
-			this.ClearUnionSql();
+            this.ClearUnionSql();
             this.InitTableAlias(lambdaExpr);
-            var sqlSegment = this.VisitAndDeferred(new SqlSegment { Expression = lambdaExpr.Body });
-            this.ReaderFields = sqlSegment.Value as List<ReaderField>;
-            var existsMembers = this.ReaderFields.Select(f => f.TargetMember.Name).ToList();
-
+            if (lambdaExpr.Body.NodeType == ExpressionType.MemberInit)
+            {
+                var sqlSegment = this.VisitAndDeferred(new SqlSegment { Expression = lambdaExpr.Body });
+                this.ReaderFields = sqlSegment.Value as List<ReaderField>;
+            }
+            else this.ReaderFields = new();
+            bool isExistsFields = false;
+            List<string> existsMembers = null;
+            if (this.ReaderFields.Count > 0)
+            {
+                existsMembers = this.ReaderFields.Select(f => f.TargetMember.Name).ToList();
+                isExistsFields = true;
+            }
             var targetMembers = targetType.GetMembers(BindingFlags.Public | BindingFlags.Instance)
                 .Where(f => f.MemberType == MemberTypes.Property | f.MemberType == MemberTypes.Field).ToList();
 
             foreach (var memberInfo in targetMembers)
             {
-                if (existsMembers.Contains(memberInfo.Name)) continue;
+                if (isExistsFields && existsMembers.Contains(memberInfo.Name)) continue;
                 if (this.TryFindReaderField(memberInfo, out var readerField))
                     this.ReaderFields.Add(readerField);
             }

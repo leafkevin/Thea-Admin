@@ -114,7 +114,6 @@ class ModelConfiguration : IModelConfiguration
             f.Member(t => t.RouteUrl).Field(nameof(Route.RouteUrl)).NativeDbType(MySqlDbType.VarChar).Required();
             f.Member(t => t.RouteTitle).Field(nameof(Route.RouteTitle)).NativeDbType(MySqlDbType.VarChar).Required();
             f.Member(t => t.Component).Field(nameof(Route.Component)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.MenuId).Field(nameof(Route.MenuId)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.Description).Field(nameof(Route.Description)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.RedirectUrl).Field(nameof(Route.RedirectUrl)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.Icon).Field(nameof(Route.Icon)).NativeDbType(MySqlDbType.VarChar);
@@ -129,6 +128,15 @@ class ModelConfiguration : IModelConfiguration
             f.Member(t => t.CreatedAt).Field(nameof(Route.CreatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
             f.Member(t => t.UpdatedBy).Field(nameof(Route.UpdatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
             f.Member(t => t.UpdatedAt).Field(nameof(Route.UpdatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
+        });
+        builder.Entity<MenuPage>(f =>
+        {
+            f.ToTable("sys_menu_page").Key(t => t.MenuId);
+            f.ToTable("sys_menu_page").Key(t => t.RouteId);
+            f.Member(t => t.MenuId).Field(nameof(MenuPage.MenuId)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.RouteId).Field(nameof(MenuPage.RouteId)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.UpdatedBy).Field(nameof(MenuPage.UpdatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.UpdatedAt).Field(nameof(MenuPage.UpdatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
         });
     }
 }

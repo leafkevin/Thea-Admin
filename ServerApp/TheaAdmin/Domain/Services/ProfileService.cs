@@ -98,12 +98,15 @@ public class ProfileService
         if (menuItems.Count <= 0)
             return TheaResponse.Fail(1, "没有配置任何菜单数据");
 
-        var rootId = menuItems.First().ParentId;
+        var rootId = menuItems.First(f => !string.IsNullOrEmpty(f.ParentId)).ParentId;
         var menuIds = menuItems.FindAll(f => f.MenuType == MenuType.Page).Select(f => f.MenuId).ToList();
-        var myPages = await repository.QueryAsync<Route>(f => f.Status == DataStatus.Active
-            && (menuIds.Contains(f.MenuId) || f.IsStatic));
+        var myPages = await repository.From<Route>()
+            .LeftJoin<MenuPage>((a, b) => a.RouteId == b.RouteId)
+            .Where((a, b) => a.Status == DataStatus.Active && (menuIds.Contains(b.MenuId) || a.IsStatic))
+            .SelectFlattenTo<PageDto>((a, b) => new())
+            .ToListAsync();
         var result = new List<RouteDto>();
-        var myMenus = menuItems.FindAll(f => f.ParentId == rootId);
+        var myMenus = menuItems.FindAll(f => f.ParentId == rootId || f.IsStatic);
         if (myMenus.Count > 1)
             myMenus.Sort((x, y) => x.Sequence.CompareTo(y.Sequence));
         var menuRoutes = new List<RouteDto>();
@@ -128,7 +131,7 @@ public class ProfileService
         if (result <= 0) return TheaResponse.Fail(1, "操作失败，请重试");
         return TheaResponse.Success;
     }
-    private void AddMenuRoutes(List<Menu> myMenus, List<RouteDto> menuRoutes, List<Menu> menuItems, List<Route> pages)
+    private void AddMenuRoutes(List<Menu> myMenus, List<RouteDto> menuRoutes, List<Menu> menuItems, List<PageDto> pages)
     {
         foreach (var myMenu in myMenus)
         {
@@ -137,11 +140,11 @@ public class ProfileService
                 MenuId = myMenu.MenuId,
                 ParentId = myMenu.ParentId,
                 Path = myMenu.RouteUrl,
-                IsPage = myMenu.MenuType == MenuType.Page,
                 Meta = new MenuRouteMetaDto
                 {
                     Title = myMenu.MenuName,
-                    Icon = myMenu.Icon
+                    Icon = myMenu.Icon,
+                    IsPage = myMenu.MenuType == MenuType.Page,
                 },
                 Children = new(),
                 Sequence = myMenu.Sequence
@@ -153,7 +156,7 @@ public class ProfileService
                 //菜单有页面，就有redirect
                 var mainRoute = myPages.Find(f => !f.IsHidden);
                 menuRoute.Redirect = mainRoute.Component;
-                
+
                 foreach (var myPage in myPages)
                 {
                     RouteDto myPageRoute = null;
@@ -161,10 +164,10 @@ public class ProfileService
                     {
                         Name = myPage.RouteName,
                         Path = myPage.RouteUrl,
-                        IsPage = true,
                         Meta = new MenuRouteMetaDto
                         {
-                            Title = myPage.RouteTitle
+                            Title = myPage.RouteTitle,
+                            IsPage = true
                         }
                     });
                     myPageRoute.Meta.MenuPath = myMenu.RouteUrl;

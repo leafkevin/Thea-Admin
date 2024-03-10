@@ -12,7 +12,6 @@ public class RouteDto
     public string Path { get; set; }
     public string Name { get; set; }
     public string Component { get; set; }
-    public bool IsPage   { get; set; }
     public string Redirect { get; set; }
     public MenuRouteMetaDto Meta { get; set; }
     public List<RouteDto> Children { get; set; }
@@ -24,6 +23,7 @@ public class MenuRouteMetaDto
     public string Title { get; set; }
     public string Icon { get; set; }
     public string LinkUrl { get; set; }
+    public bool IsPage { get; set; }
     public bool IsHidden { get; set; }
     public bool IsFull { get; set; }
     public bool IsAffix { get; set; }

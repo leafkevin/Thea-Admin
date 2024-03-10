@@ -48,7 +48,6 @@ export interface ITabPageState {
 export interface IMenuRoute {
   path: string;
   name: string;
-  isPage: boolean;
   component?: string | (() => Promise<unknown>);
   redirect?: string;
   meta: IMenuRouteMeta;
@@ -57,6 +56,7 @@ export interface IMenuRoute {
 export interface IMenuRouteMeta {
   title: string;
   icon: string;
+  isPage: boolean;
   linkUrl?: string;
   isHidden: boolean;
   isFull: boolean;

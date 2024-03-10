@@ -2,16 +2,16 @@
  Navicat Premium Data Transfer
 
  Source Server         : mariadb
- Source Server Type    : MySQL
- Source Server Version : 110003
+ Source Server Type    : MariaDB
+ Source Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
  Source Host           : localhost:3306
  Source Schema         : salon
 
- Target Server Type    : MySQL
- Target Server Version : 110003
+ Target Server Type    : MariaDB
+ Target Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 10/03/2024 14:52:54
+ Date: 10/03/2024 18:58:22
 */
 
 SET NAMES utf8mb4;
@@ -50,13 +50,13 @@ CREATE TABLE `mos_deposit`  (
   `BeginBalance` double(10, 2) NULL DEFAULT NULL COMMENT '充值前余额',
   `EndBalance` double(10, 2) NULL DEFAULT NULL COMMENT '充值后余额',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `Status` tinyint NOT NULL COMMENT '状态',
+  `Status` tinyint(4) NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`DepositId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '充值表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '充值表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mos_deposit
@@ -71,15 +71,15 @@ CREATE TABLE `mos_member`  (
   `MemberName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '姓名',
   `Mobile` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '手机号码',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `Gender` tinyint NULL DEFAULT NULL COMMENT '性别',
+  `Gender` tinyint(4) NULL DEFAULT NULL COMMENT '性别',
   `Balance` double(10, 2) NULL DEFAULT NULL COMMENT '余额',
-  `Status` tinyint NOT NULL COMMENT '状态',
+  `Status` tinyint(4) NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`MemberId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mos_member
@@ -100,13 +100,13 @@ CREATE TABLE `mos_order`  (
   `IsAppointed` tinyint(1) NULL DEFAULT 0 COMMENT '是否指定理发师',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
   `Amount` double(10, 2) NULL DEFAULT NULL COMMENT '消费余额',
-  `Status` tinyint NOT NULL COMMENT '状态',
+  `Status` tinyint(4) NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`OrderId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '会员订单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mos_order
@@ -127,13 +127,13 @@ CREATE TABLE `mos_stylist`  (
   `Password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
   `Salt` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '盐',
   `LockoutEnd` datetime NULL DEFAULT NULL COMMENT '解锁时间',
-  `Status` tinyint NOT NULL COMMENT '状态',
+  `Status` tinyint(4) NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`UserId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of mos_stylist
@@ -152,31 +152,34 @@ CREATE TABLE `sys_menu`  (
   `Description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
   `ParentId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上级菜单ID',
   `MenuType` tinyint(4) NULL DEFAULT NULL COMMENT '菜单类型',
-  `RouteId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '路由ID',
+  `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
   `IsStatic` tinyint(1) NULL DEFAULT 0 COMMENT '是否静态路由',
   `Sequence` int(11) NULL DEFAULT NULL COMMENT '序号',
   `Status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
-  `Status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`MenuId`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
-INSERT INTO `sys_menu` VALUES ('1', '首页', 'home', '/home', '/home/index', NULL, 'AdminRoot', 3, 'HomeFilled', 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('2', '会员管理', 'memberMgt', '/memberMgt', '/member/index', NULL, 'AdminRoot', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('21', '会员列表', 'memberList', '/member', NULL, NULL, '2', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('22', '充值管理', 'depositList', '/deposit', NULL, NULL, '2', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('9', '系统管理', 'systemMgt', '/systemMgt', NULL, NULL, 'AdminRoot', 2, 'Avatar', 0, 9, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('91', '用户管理', 'userList', '/user', NULL, NULL, '9', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('92', '角色管理', 'roleList', '/role', NULL, '管理角色', '9', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('93', '菜单管理', 'menuList', '/menu', NULL, NULL, '9', 3, 'UserFilled', 0, 3, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('94', '授权管理', 'authList', '/auth', NULL, '给用户分配角色，并分配操作菜单', '9', 3, 'UserFilled', 0, 4, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('AdminRoot', '管理员角色根菜单', 'AdminRoot', '/', NULL, NULL, NULL, 1, NULL, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('AdminRoot', 'AdminRoot', '管理员角色根菜单', NULL, NULL, 1, NULL, NULL, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+-- ----------------------------
+INSERT INTO `sys_menu` VALUES ('1', '管理员角色根菜单', 'AdminRoot', NULL, NULL, NULL, NULL, 1, NULL, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('11', '首页', 'Home', '/home', '/home/index', NULL, NULL, 3, 'HomeFilled', 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('12', '系统管理', 'SystemMgt', '/systemMgt', '/user/index', NULL, '1', 2, 'Avatar', 0, 9, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('121', '用户管理', 'UserList', '/user', NULL, NULL, '12', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('122', '角色管理', 'RoleList', '/role', NULL, '管理角色', '12', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('123', '菜单管理', 'MenuList', '/menu', NULL, NULL, '12', 3, 'UserFilled', 0, 3, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('124', '授权管理', 'AuthList', '/auth', NULL, '给用户分配角色，并分配操作菜单', '12', 3, 'UserFilled', 0, 4, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('13', '会员管理', 'MemberMgt', '/memberMgt', '/member/index', NULL, '1', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('131', '会员列表', 'MemberList', '/member', NULL, NULL, '13', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('132', '充值管理', 'DepositList', '/deposit', NULL, NULL, '13', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('2', '店员角色根菜单', 'EmpRoot', NULL, NULL, NULL, NULL, 1, NULL, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('21', '会员管理', 'memberMgt', '/memberMgt', '/member/index', NULL, '2', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('211', '会员列表', 'memberList', '/member', NULL, NULL, '22', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('212', '充值管理', 'depositList', '/deposit', NULL, NULL, '22', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -186,17 +189,19 @@ CREATE TABLE `sys_role`  (
   `RoleId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
   `RoleName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
   `Description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `Status` tinyint NOT NULL COMMENT '状态',
+  `Status` tinyint(4) NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`RoleId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
+INSERT INTO `sys_role` VALUES ('1', '管理员', NULL, 1, '1', '2024-03-10 07:33:56', '1', '2024-03-10 07:33:56');
+INSERT INTO `sys_role` VALUES ('2', '普通店员', NULL, 1, '1', '2024-03-10 07:33:56', '1', '2024-03-10 07:33:56');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -206,14 +211,15 @@ CREATE TABLE `sys_role_menu`  (
   `RoleId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
   `MenuId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单ID',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`RoleId`, `MenuId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
-INSERT INTO `sys_role_menu` VALUES ('1', 'AdminRoot', '1', '2024-03-05 13:06:31');
+INSERT INTO `sys_role_menu` VALUES ('1', '1', '1', '2024-03-05 13:06:31');
+INSERT INTO `sys_role_menu` VALUES ('2', '2', '1', '2024-03-05 13:06:31');
 
 -- ----------------------------
 -- Table structure for sys_route
@@ -226,7 +232,6 @@ CREATE TABLE `sys_route`  (
   `RouteUrl` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '路由地址',
   `Component` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '组件物理路径',
   `Description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `MenuId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '菜单ID',
   `RedirectUrl` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '重定向URL',
   `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
   `IsStatic` tinyint(1) NULL DEFAULT 0 COMMENT '是否静态路由',
@@ -235,34 +240,34 @@ CREATE TABLE `sys_route`  (
   `IsFull` tinyint(1) NULL DEFAULT 0 COMMENT '是否全屏显示',
   `IsAffix` tinyint(1) NULL DEFAULT 0 COMMENT '是否固定标签页',
   `IsKeepAlive` tinyint(1) NULL DEFAULT 1 COMMENT '是否缓存',
-  `Status` tinyint NOT NULL DEFAULT 1 COMMENT '状态',
+  `Status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`RouteId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '页面路由表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '页面路由表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_route
 -- ----------------------------
-INSERT INTO `sys_route` VALUES ('11', 'Home', '首页', '/home/index', '/home/index', NULL, '1', NULL, 'UserFilled', 1, 0, 0, 0, 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('12', 'Login', '登录', '/login/index', '/login/index', NULL, NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('13', 'SwitchRole', '切换角色', '/switchRole/index', '/switchRole/index', NULL, NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('14', 'Profile', '个人信息', '/profile/index', '/profile/index', NULL, NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('15', 'ResetPwd', '重置密码', '/resetPwd/index', '/resetPwd/index', NULL, NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('211', 'MemberList', '会员列表', '/member/index', '/member/index', NULL, '21', NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('212', 'MemberEdit', '会员编辑', '/member/edit', '/member/form', NULL, '21', NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('221', 'DepositList', '充值列表', '/deposit/index', '/deposit/index', NULL, '22', NULL, 'CreditCard', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('222', 'DepositEdit', '会员充值', '/deposit/edit', '/deposit/form', NULL, '22', NULL, 'CreditCard', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('911', 'UserList', '用户列表', '/user/index', '/user/index', NULL, '91', NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('912', 'UserEdit', '用户编辑', '/user/edit', '/user/form', NULL, '91', NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('921', 'RoleList', '角色列表', '/role/index', '/role/index', NULL, '92', NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('922', 'RoleEdit', '角色编辑', '/role/edit', '/role/edit', NULL, '92', NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('931', 'MenuList', '菜单列表', '/menu/index', '/menu/index', NULL, '93', NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('932', 'MenurEdit', '菜单编辑', '/menu/edit', '/menu/form', NULL, '93', NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('941', 'AuthList', '授权列表', '/auth/index', '/auth/index', NULL, '94', NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('942', 'AuthEdit', '用户授权', '/auth/form', '/auth/form', NULL, '94', NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('1', 'Home', '首页', '/home/index', '/home/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('11', 'UserList', '用户列表', '/user/index', '/user/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('12', 'UserEdit', '用户编辑', '/user/edit', '/user/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('13', 'RoleList', '角色列表', '/role/index', '/role/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('14', 'RoleEdit', '角色编辑', '/role/edit', '/role/edit', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('15', 'MenuList', '菜单列表', '/menu/index', '/menu/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('16', 'MenurEdit', '菜单编辑', '/menu/edit', '/menu/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('17', 'AuthList', '授权列表', '/auth/index', '/auth/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('18', 'AuthEdit', '用户授权', '/auth/form', '/auth/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('2', 'Login', '登录', '/login/index', '/login/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('3', 'SwitchRole', '切换角色', '/switchRole/index', '/switchRole/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('31', 'MemberList', '会员列表', '/member/index', '/member/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('32', 'MemberEdit', '会员编辑', '/member/edit', '/member/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('4', 'Profile', '个人信息', '/profile/index', '/profile/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('41', 'DepositList', '充值列表', '/deposit/index', '/deposit/index', NULL, NULL, 'CreditCard', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('42', 'DepositEdit', '会员充值', '/deposit/edit', '/deposit/form', NULL, NULL, 'CreditCard', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('5', 'ResetPwd', '重置密码', '/resetPwd/index', '/resetPwd/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -279,13 +284,13 @@ CREATE TABLE `sys_user`  (
   `Password` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '密码',
   `Salt` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '盐',
   `LockoutEnd` datetime NULL DEFAULT NULL COMMENT '解锁时间',
-  `Status` tinyint NOT NULL COMMENT '状态',
+  `Status` tinyint(4) NOT NULL COMMENT '状态',
   `CreatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '创建人',
-  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建日期',
+  `CreatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建日期',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`UserId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表,所有登陆系统的用户信息' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表,所有登陆系统的用户信息' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user
@@ -300,9 +305,9 @@ CREATE TABLE `sys_user_role`  (
   `UserId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户ID',
   `RoleId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
   `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp COMMENT '最后更新日期',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
   PRIMARY KEY (`UserId`, `RoleId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user_role
