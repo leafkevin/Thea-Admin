@@ -135,6 +135,7 @@
   import { DEFAULT_PRIMARY } from "@/config";
   import mittBus from "@/utils/mittBus";
   import SwitchDark from "@/components/SwitchDark/index.vue";
+  import { LayoutType } from "@/stores/types";
 
   const { changePrimary, changeGreyOrWeak, setAsideTheme, setHeaderTheme } = useTheme();
 

@@ -3,6 +3,7 @@ import router from "@/routers";
 import { defineStore } from "pinia";
 import { getUrlWithParams } from "@/utils";
 import { useKeepAliveStore } from "./keepAlive";
+import { ITabPageState } from "./types";
 
 const keepAliveStore = useKeepAliveStore();
 

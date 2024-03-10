@@ -36,18 +36,19 @@
 
 <script setup lang="ts" name="layoutTransverse">
   import { computed } from "vue";
-  import { useUserStore } from "@/stores/account";
   import { useRoute, useRouter } from "vue-router";
   import Main from "@/layouts/components/Main/index.vue";
   import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
   import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
+  import { IMenuRoute } from "@/stores/types";
+  import { useMenuStore } from "@/stores/menu";
 
   const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
   const route = useRoute();
   const router = useRouter();
-  const userStore = useUserStore();
-  const showMenuRoutes = computed(() => userStore.showMenuRoutes);
+  const menuStore = useMenuStore();
+  const showMenuRoutes = computed(() => menuStore.showMenuRoutes);
   const activeMenuPath = computed(() => (route.meta.menuPath ? route.meta.menuPath : route.path) as string);
 
   const handleClickMenu = (subItem: IMenuRoute) => {

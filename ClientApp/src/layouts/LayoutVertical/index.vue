@@ -32,21 +32,21 @@
 <script setup lang="ts" name="layoutVertical">
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import { useUserStore } from "@/stores/account";
   import { useGlobalStore } from "@/stores/global";
   import Main from "@/layouts/components/Main/index.vue";
   import ToolBarLeft from "@/layouts/components/Header/ToolBarLeft.vue";
   import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
   import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
+  import { useMenuStore } from "@/stores/menu";
 
   const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
   const route = useRoute();
-  const userStore = useUserStore();
+  const menuStore = useMenuStore();
   const globalStore = useGlobalStore();
   const accordion = computed(() => globalStore.accordion);
   const isCollapse = computed(() => globalStore.isCollapse);
-  const showMenuRoutes = computed(() => userStore.showMenuRoutes);
+  const showMenuRoutes = computed(() => menuStore.showMenuRoutes);
   const activeMenu = computed(() => (route.meta.menuPath ? route.meta.menuPath : route.path) as string);
 </script>
 

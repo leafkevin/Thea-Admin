@@ -1,10 +1,12 @@
 import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
-import { refreshToken } from "@/api/account";
+import { getMyRoutes, refreshToken } from "@/api/account";
 import { useUserStore } from "@/stores/account";
-import { LOGIN_URL, SWITCH_ROLE_URL } from "@/config";
-import { staticRouter, errorRouter } from "@/routers/staticRouter";
+import { useMenuStore } from "@/stores/menu";
+import { LOGIN_URL, ROUTER_WHITE_LIST, SWITCH_ROLE_URL } from "@/config";
+import { staticRouter } from "@/routers/staticRouter";
 import NProgress from "@/utils/nprogress";
 import { ElNotification } from "element-plus";
+import { IMenuRoute, IUserState } from "@/stores/types";
 
 const mode = import.meta.env.VITE_ROUTER_MODE;
 
@@ -31,7 +33,7 @@ const routerMode = {
  * */
 const router = createRouter({
   history: routerMode[mode](),
-  routes: [...staticRouter, ...errorRouter],
+  routes: [...staticRouter],
   strict: false,
   scrollBehavior: () => ({ left: 0, top: 0 })
 });
@@ -48,11 +50,18 @@ router.beforeEach(async to => {
   const title = import.meta.env.VITE_GLOB_APP_TITLE;
   document.title = to.meta.title ? `${to.meta.title} - ${title}` : title;
 
-  // 4.判断是否登陆页面，直接放行
-  if (to.path == LOGIN_URL) return true;
+  // 3.判断是否登陆页面，直接放行
+  if (to.path == LOGIN_URL) {
+    userStore.clearState();
+    resetRouter();
+    return true;
+  }
+
+  // 4.判断访问页面是否在路由白名单地址(静态路由)中，如果存在直接放行
+  if (ROUTER_WHITE_LIST.includes(to.path)) return true;
 
   // 5.判断是否有 Token，没有重定向到 login 页面
-  if (!userStore.isAuthorized) return { name: "Login", replace: true };
+  if (!userStore.isAuthorized) return { path: LOGIN_URL, replace: true };
 
   // token已过期，调用刷新token接口
   if (userStore.isExpired) {
@@ -61,7 +70,7 @@ router.beforeEach(async to => {
     if (response.isSuccess) {
       userStore.setState(response.data as IUserState);
       //code=9 跳转到切换角色页面
-      if (response.code > 0) return { name: "switchRole", replace: true };
+      if (response.code > 0) return { path: SWITCH_ROLE_URL, replace: true };
       return true;
     }
     ElNotification({
@@ -70,23 +79,46 @@ router.beforeEach(async to => {
       type: "error",
       duration: 3000
     });
-    return { name: "Login", replace: true };
+    return { path: LOGIN_URL, replace: true };
   }
-  if (!userStore.hasMenuRoutes && to.path !== SWITCH_ROLE_URL) return { name: "switchRole", replace: true };
+  const menuStore = useMenuStore();
+  if (!menuStore.hasMenuRoutes) {
+    if (to.path == SWITCH_ROLE_URL) return true;
+    if (userStore.isMultiRoles) return { path: SWITCH_ROLE_URL, replace: true };
+
+    const response = await getMyRoutes();
+    if (!response.isSuccess) {
+      ElNotification({
+        title: "加载菜单失败",
+        message: `加载菜单失败，${response.message}，code:${response.code}`,
+        type: "error"
+      });
+    }
+
+    //需要转到选择角色页面 code=9
+    if (response.code > 0) return { path: SWITCH_ROLE_URL, replace: true };
+
+    const menuRoutes = response.data as IMenuRoute[];
+    menuStore.setState(menuRoutes);
+  }
+
+  //token有效，跳过登录，地址栏输入地址，直接进入对应页面，此时没有菜单需要生成
+  if (router.getRoutes().length <= staticRouter.length) {
+    menuStore.loadAsyncMenuRoutes();
+    return { path: to.fullPath, replace: true };
+  }
   return true;
 });
-
 /**
  * @description 重置路由
  * */
 export const resetRouter = () => {
-  const userStore = useUserStore();
-  userStore.flatMenuRoutes.forEach(route => {
+  const menuStore = useMenuStore();
+  menuStore.flatMenuRoutes.forEach(route => {
     const { name } = route;
     if (name && router.hasRoute(name)) router.removeRoute(name);
   });
 };
-
 /**
  * @description 路由跳转错误
  * */

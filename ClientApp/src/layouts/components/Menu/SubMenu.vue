@@ -1,15 +1,6 @@
 <template>
   <template v-for="subItem in menuList" :key="subItem.path">
-    <el-sub-menu v-if="subItem.children?.length" :index="subItem.path">
-      <template #title>
-        <el-icon v-if="subItem.meta.icon">
-          <component :is="subItem.meta.icon"></component>
-        </el-icon>
-        <span class="sle">{{ subItem.meta.title }}</span>
-      </template>
-      <SubMenu :menu-list="subItem.children" />
-    </el-sub-menu>
-    <el-menu-item v-else :index="subItem.path" @click="handleClickMenu(subItem)">
+    <el-menu-item v-if="subItem.isPage" :index="subItem.path" @click="handleClickMenu(subItem)">
       <el-icon v-if="subItem.meta.icon">
         <component :is="subItem.meta.icon"></component>
       </el-icon>
@@ -17,18 +8,28 @@
         <span class="sle">{{ subItem.meta.title }}</span>
       </template>
     </el-menu-item>
+    <el-sub-menu v-else :index="subItem.path">
+      <template #title>
+        <el-icon v-if="subItem.meta.icon">
+          <component :is="subItem.meta.icon"></component>
+        </el-icon>
+        <span class="sle">{{ subItem.meta.title }}</span>
+      </template>
+      <SubMenu v-if="subItem.children && subItem.children.length > 0" :menu-list="subItem.children" />
+    </el-sub-menu>
   </template>
 </template>
 
 <script setup lang="ts">
+  import { IMenuRoute } from "@/stores/types";
   import { useRouter } from "vue-router";
 
-  defineProps<{ menuList: IMenuRoute[] }>();
+  defineProps<{ menuList: IMenuRoute[] | undefined }>();
 
   const router = useRouter();
   const handleClickMenu = (subItem: IMenuRoute) => {
     if (subItem.meta.linkUrl) return window.open(subItem.meta.linkUrl, "_blank");
-    router.push(subItem.path);
+    router.push(subItem.redirect ?? subItem.path);
   };
 </script>
 

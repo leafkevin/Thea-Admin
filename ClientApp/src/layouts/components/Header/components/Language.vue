@@ -19,6 +19,7 @@
   import { useI18n } from "vue-i18n";
   import { computed } from "vue";
   import { useGlobalStore } from "@/stores/global";
+  import { LanguageType } from "@/stores/types";
 
   const i18n = useI18n();
   const globalStore = useGlobalStore();

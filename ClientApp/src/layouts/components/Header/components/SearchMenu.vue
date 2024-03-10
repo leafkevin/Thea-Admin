@@ -30,10 +30,11 @@
   import { ref, computed, nextTick } from "vue";
   import { Search } from "@element-plus/icons-vue";
   import { useRouter } from "vue-router";
-  import { useUserStore } from "@/stores/account";
+  import { useMenuStore } from "@/stores/menu";
+  import { IMenuRoute } from "@/stores/types";
   const router = useRouter();
-  const userStore = useUserStore();
-  const menuList = computed(() => userStore.menuRoutes.filter(item => !item.meta.isHidden));
+  const menuStore = useMenuStore();
+  const menuList = computed(() => menuStore.menuRoutes.filter(item => !item.meta.isHidden));
 
   const searchMenuList = (queryString: string, cb: Function) => {
     const results = queryString ? menuList.value.filter(filterNodeMethod(queryString)) : menuList.value;

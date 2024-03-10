@@ -51,7 +51,7 @@ public class AccountService
             myRoleIds = roleIds[0];
             var response = await this.profileService.GetMyRoutes(myRoleIds);
             if (!response.IsSuccess) return response;
-            menuRoutes = response.Data as List<MenuRouteDto>;
+            menuRoutes = response.Data as List<RouteDto>;
         }
         (var accessToken, var refreshToken, var expires) = this.tokenService.Create(userInfo.UserId, userInfo.Name, myRoleIds);
 

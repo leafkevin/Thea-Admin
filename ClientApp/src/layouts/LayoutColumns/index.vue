@@ -51,22 +51,23 @@
 <script setup lang="ts" name="layoutColumns">
   import { ref, computed, watch } from "vue";
   import { useRoute, useRouter } from "vue-router";
-  import { useUserStore } from "@/stores/account";
   import { useGlobalStore } from "@/stores/global";
   import Main from "@/layouts/components/Main/index.vue";
   import ToolBarLeft from "@/layouts/components/Header/ToolBarLeft.vue";
   import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
   import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
+  import { IMenuRoute } from "@/stores/types";
+  import { useMenuStore } from "@/stores/menu";
 
   const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
   const route = useRoute();
   const router = useRouter();
-  const userStore = useUserStore();
+  const menuStore = useMenuStore();
   const globalStore = useGlobalStore();
   const accordion = computed(() => globalStore.accordion);
   const isCollapse = computed(() => globalStore.isCollapse);
-  const menuRoutes = computed(() => userStore.menuRoutes);
+  const menuRoutes = computed(() => menuStore.menuRoutes);
   const activeMenu = computed(() => (route.meta.menuPath ? route.meta.menuPath : route.path) as string);
 
   const subMenuList = ref<IMenuRoute[]>([]);

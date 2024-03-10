@@ -23,20 +23,20 @@
   import { HOME_URL } from "@/config";
   import { useRoute, useRouter } from "vue-router";
   import { ArrowRight } from "@element-plus/icons-vue";
-  import { useUserStore } from "@/stores/account";
+  import { useMenuStore } from "@/stores/menu";
   import { useGlobalStore } from "@/stores/global";
+  import { IMenuRoute } from "@/stores/types";
 
   const route = useRoute();
   const router = useRouter();
-  const userStore = useUserStore();
+  const menuStore = useMenuStore();
   const globalStore = useGlobalStore();
 
   const breadcrumbList = computed(() => {
-    let breadcrumbData = userStore.breadcrumbs[route.matched[route.matched.length - 1].path] ?? [];
+    let breadcrumbData = menuStore.breadcrumbs[route.path] ?? [];
     // 🙅‍♀️不需要首页面包屑可删除以下判断
-    if (breadcrumbData[0].path !== HOME_URL) {
-      breadcrumbData = [{ path: HOME_URL, meta: { icon: "HomeFilled", title: "首页" } }, ...breadcrumbData];
-    }
+    if (breadcrumbData.length > 0) breadcrumbData = [...breadcrumbData];
+    else breadcrumbData = [{ path: HOME_URL, meta: { icon: "HomeFilled", title: "首页" } }];
     return breadcrumbData;
   });
 

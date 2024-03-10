@@ -24,6 +24,12 @@ public class ProfileController : ControllerBase
         var passport = this.User.ToPassport();
         return await this.profileService.GetMyRoles(passport.UserId);
     }
+    [HttpGet]
+    public async Task<TheaResponse> GetMyRoutes()
+    {
+        var passport = this.User.ToPassport();
+        return await this.profileService.GetMyRoutes(passport.Roles);
+    }
     [HttpPost]
     public async Task<TheaResponse> SwitchRole([FromBody] SwitchRoleRequest request)
     {

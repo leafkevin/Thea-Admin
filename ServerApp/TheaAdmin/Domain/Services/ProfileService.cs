@@ -1,12 +1,12 @@
-﻿using TheaAdmin.Domain.Models;
-using TheaAdmin.Dtos;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Thea;
+using TheaAdmin.Domain.Models;
+using TheaAdmin.Dtos;
 using Trolley;
-using Microsoft.Extensions.Logging;
 
 namespace TheaAdmin.Domain.Services;
 
@@ -70,7 +70,7 @@ public class ProfileService
         var cteQuery = repository
             .From<RoleMenu>()
             .InnerJoin<Menu>((a, b) => a.MenuId == b.ParentId)
-            .Where((a, b) => a.RoleId == roleId)
+            .Where((a, b) => a.RoleId == roleId && b.Status == DataStatus.Active)
             .Select((a, b) => new
             {
                 b.MenuId,
@@ -79,6 +79,7 @@ public class ProfileService
             .UnionAllRecursive((f, self) => f
                 .From<Menu>()
                 .InnerJoin(self, (a, b) => a.ParentId == b.MenuId)
+                .Where((a, b) => a.Status == DataStatus.Active)
                 .Select((a, b) => new
                 {
                     a.MenuId,
@@ -88,19 +89,25 @@ public class ProfileService
         var menuItems = await repository
             .From<Menu>()
             .InnerJoin(cteQuery, (a, b) => a.MenuId == b.MenuId)
+            .Where((a, b) => a.Status == DataStatus.Active)
             .Select((a, b) => a)
-            .OrderBy(f => f.Sequence)
+            .Union(f => f.From<Menu>()
+                .Where(f => f.IsStatic && f.Status == DataStatus.Active)
+                .Select(f => f))
             .ToListAsync();
         if (menuItems.Count <= 0)
             return TheaResponse.Fail(1, "没有配置任何菜单数据");
 
         var rootId = menuItems.First().ParentId;
         var menuIds = menuItems.FindAll(f => f.MenuType == MenuType.Page).Select(f => f.MenuId).ToList();
-        var myPages = await repository.QueryAsync<PageRoute>(f => menuIds.Contains(f.MenuId));
-        var result = new List<MenuRouteDto>();
+        var myPages = await repository.QueryAsync<Route>(f => f.Status == DataStatus.Active
+            && (menuIds.Contains(f.MenuId) || f.IsStatic));
+        var result = new List<RouteDto>();
         var myMenus = menuItems.FindAll(f => f.ParentId == rootId);
-        var menuRoutes = new List<MenuRouteDto>();
-        this.AddChildren("/", myMenus, menuRoutes, menuItems, myPages);
+        if (myMenus.Count > 1)
+            myMenus.Sort((x, y) => x.Sequence.CompareTo(y.Sequence));
+        var menuRoutes = new List<RouteDto>();
+        this.AddMenuRoutes(myMenus, menuRoutes, menuItems, myPages);
         return TheaResponse.Succeed(menuRoutes);
     }
     public async Task<TheaResponse> ResetPassword(string userId, string password, string operatorId)
@@ -121,58 +128,65 @@ public class ProfileService
         if (result <= 0) return TheaResponse.Fail(1, "操作失败，请重试");
         return TheaResponse.Success;
     }
-    private void AddChildren(string parentPath, List<Menu> myMenus, List<MenuRouteDto> menuRoutes, List<Menu> menuItems, List<PageRoute> pages)
+    private void AddMenuRoutes(List<Menu> myMenus, List<RouteDto> menuRoutes, List<Menu> menuItems, List<Route> pages)
     {
         foreach (var myMenu in myMenus)
         {
-            var menuRoute = new MenuRouteDto
+            var menuRoute = new RouteDto
             {
                 MenuId = myMenu.MenuId,
                 ParentId = myMenu.ParentId,
-                Name = myMenu.RouteName,
+                Path = myMenu.RouteUrl,
+                IsPage = myMenu.MenuType == MenuType.Page,
                 Meta = new MenuRouteMetaDto
                 {
                     Title = myMenu.MenuName,
                     Icon = myMenu.Icon
-                }
+                },
+                Children = new(),
+                Sequence = myMenu.Sequence
             };
             menuRoutes.Add(menuRoute);
             if (myMenu.MenuType == MenuType.Page)
             {
-                menuRoute.Children = new();
                 var myPages = pages.FindAll(f => f.MenuId == myMenu.MenuId);
+                //菜单有页面，就有redirect
+                var mainRoute = myPages.Find(f => !f.IsHidden);
+                menuRoute.Redirect = mainRoute.Component;
+                
                 foreach (var myPage in myPages)
                 {
-                    var myPageRoute = new MenuRouteDto
+                    RouteDto myPageRoute = null;
+                    menuRoute.Children.Add(myPageRoute = new RouteDto
                     {
                         Name = myPage.RouteName,
                         Path = myPage.RouteUrl,
-                        Component = myPage.Component,
+                        IsPage = true,
                         Meta = new MenuRouteMetaDto
                         {
-                            Title = myPage.RouteTitle,
-                            Icon = myPage.Icon,
-                            MenuPath = menuRoute.Path,
-                            IsAffix = myPage.IsAffix,
-                            IsHidden = myPage.IsHidden,
-                            IsFull = myPage.IsFull,
-                            IsKeepAlive = myPage.IsFull
+                            Title = myPage.RouteTitle
                         }
-                    };
+                    });
+                    myPageRoute.Meta.MenuPath = myMenu.RouteUrl;
+
+                    myPageRoute.Component = myPage.Component;
+                    myPageRoute.Meta.IsAffix = myPage.IsAffix;
+                    myPageRoute.Meta.IsHidden = myPage.IsHidden;
+                    myPageRoute.Meta.IsFull = myPage.IsFull;
+                    myPageRoute.Meta.IsKeepAlive = myPage.IsKeepAlive;
 
                     if (myPage.IsLink) myPageRoute.Meta.LinkUrl = myPage.RedirectUrl;
-                    else myPageRoute.Redirect = myPage.RedirectUrl;
-                    menuRoute.Children.Add(myPageRoute);
                 }
             }
             else
             {
-                menuRoute.Path = $"{parentPath}{myMenu.RouteName}";
                 var children = menuItems.FindAll(f => f.ParentId == myMenu.MenuId);
-                if (children != null && children.Count > 0)
+                if (children.Count > 0)
                 {
+                    if (children.Count > 1)
+                        children.Sort((x, y) => x.Sequence.CompareTo(y.Sequence));
                     menuRoute.Children = new();
-                    this.AddChildren(menuRoute.Path, children, menuRoute.Children, menuItems, pages);
+                    this.AddMenuRoutes(children, menuRoute.Children, menuItems, pages);
                 }
             }
         }

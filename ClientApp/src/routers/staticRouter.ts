@@ -1,5 +1,5 @@
 import { RouteRecordRaw } from "vue-router";
-import { HOME_URL, LOGIN_URL, SWITCH_ROLE_URL } from "@/config";
+import { HOME_URL, LOGIN_URL } from "@/config";
 
 /**
  * staticRouter (静态路由)
@@ -7,38 +7,26 @@ import { HOME_URL, LOGIN_URL, SWITCH_ROLE_URL } from "@/config";
 export const staticRouter: RouteRecordRaw[] = [
   {
     path: "/",
-    redirect: HOME_URL
+    name: "Layout",
+    redirect: HOME_URL,
+    component: () => import("@/layouts/index.vue"),
+    // component: () => import("@/layouts/indexAsync.vue")
+    meta: {
+      title: "",
+      isKeepAlive: false
+    },
+    children: []
   },
   {
     path: LOGIN_URL,
     name: "Login",
     component: () => import("@/views/login/index.vue"),
     meta: {
-      title: "登录"
+      title: "登录",
+      isKeepAlive: false
     }
   },
-  {
-    path: SWITCH_ROLE_URL,
-    name: "SwitchRole",
-    component: () => import("@/views/switchRole/index.vue"),
-    meta: {
-      title: "切换角色"
-    }
-  },
-  {
-    path: "/layout",
-    name: "layout",
-    component: () => import("@/layouts/index.vue"),
-    // component: () => import("@/layouts/indexAsync.vue"),
-    redirect: HOME_URL,
-    children: []
-  }
-];
 
-/**
- * errorRouter (错误页面路由)
- */
-export const errorRouter = [
   {
     path: "/403",
     name: "403",

@@ -18,6 +18,7 @@
 <script setup lang="ts">
   import { computed } from "vue";
   import { useGlobalStore } from "@/stores/global";
+  import { AssemblySizeType } from "@/stores/types";
 
   const globalStore = useGlobalStore();
   const assemblySize = computed(() => globalStore.assemblySize);

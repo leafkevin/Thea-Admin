@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace TheaAdmin.Dtos;
 
-public class MenuRouteDto
+public class RouteDto
 {
     [JsonIgnore]
     public string MenuId { get; set; }
@@ -12,9 +12,12 @@ public class MenuRouteDto
     public string Path { get; set; }
     public string Name { get; set; }
     public string Component { get; set; }
+    public bool IsPage   { get; set; }
     public string Redirect { get; set; }
     public MenuRouteMetaDto Meta { get; set; }
-    public List<MenuRouteDto> Children { get; set; }
+    public List<RouteDto> Children { get; set; }
+    [JsonIgnore]
+    public int Sequence { get; set; }
 }
 public class MenuRouteMetaDto
 {

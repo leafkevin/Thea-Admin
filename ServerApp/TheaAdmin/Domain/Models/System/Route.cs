@@ -5,7 +5,7 @@ namespace TheaAdmin.Domain.Models;
 /// <summary>
 /// 页面路由表
 /// </summary>
-public class PageRoute
+public class Route
 {
     /// <summary>
     /// 路由ID
@@ -16,25 +16,25 @@ public class PageRoute
     /// </summary>
     public string RouteName { get; set; }
     /// <summary>
-    /// 路由地址
-    /// </summary>
-    public string RouteUrl { get; set; }
-    /// <summary>
     /// 路由标题
     /// </summary>
     public string RouteTitle { get; set; }
+    /// <summary>
+    /// 路由地址
+    /// </summary>
+    public string RouteUrl { get; set; }
     /// <summary>
     /// 组件物理路径
     /// </summary>
     public string Component { get; set; }
     /// <summary>
-    /// 菜单ID
-    /// </summary>
-    public string MenuId { get; set; }
-    /// <summary>
     /// 描述
     /// </summary>
     public string Description { get; set; }
+    /// <summary>
+    /// 菜单ID
+    /// </summary>
+    public string MenuId { get; set; }
     /// <summary>
     /// 重定向URL
     /// </summary>
@@ -44,9 +44,9 @@ public class PageRoute
     /// </summary>
     public string Icon { get; set; }
     /// <summary>
-    /// 是否需要验证权限
+    /// 是否静态路由
     /// </summary>
-    public bool IsNeedAuth { get; set; }
+    public bool IsStatic { get; set; }
     /// <summary>
     /// 是否需要隐藏
     /// </summary>
@@ -70,7 +70,7 @@ public class PageRoute
     /// <summary>
     /// 状态
     /// </summary>
-    public sbyte Status { get; set; }
+    public DataStatus Status { get; set; }
     /// <summary>
     /// 创建人
     /// </summary>

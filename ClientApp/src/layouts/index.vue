@@ -12,6 +12,7 @@
   import LayoutClassic from "./LayoutClassic/index.vue";
   import LayoutTransverse from "./LayoutTransverse/index.vue";
   import LayoutColumns from "./LayoutColumns/index.vue";
+  import { LayoutType } from "@/stores/types";
 
   const LayoutComponents: Record<LayoutType, Component> = {
     vertical: LayoutVertical,

@@ -48,22 +48,22 @@
 
 <script setup lang="ts" name="login">
   import { ref, onMounted } from "vue";
-  import { RouteRecordRaw, useRouter } from "vue-router";
+  import { useRouter } from "vue-router";
   import { getTimeState } from "@/utils";
   import { ElNotification } from "element-plus";
-  import { login as loginApi } from "@/api/account";
+  import { ILoginResponse, login as loginApi } from "@/api/account";
   import { useUserStore } from "@/stores/account";
   import { useTabPageStore } from "@/stores/tabPages";
   import { useKeepAliveStore } from "@/stores/keepAlive";
   import { CircleClose, UserFilled } from "@element-plus/icons-vue";
   import type { ElForm } from "element-plus";
   import SwitchDark from "@/components/SwitchDark/index.vue";
+  import { HOME_URL } from "@/config";
+  import { useMenuStore } from "@/stores/menu";
 
   const router = useRouter();
   const userStore = useUserStore();
-  const tabPageStore = useTabPageStore();
-  const keepAliveStore = useKeepAliveStore();
-  const modules = import.meta.glob("@/views/**/*.vue");
+  const menuStore = useMenuStore();
 
   defineOptions({
     name: "Login"
@@ -98,39 +98,30 @@
             type: "error"
           });
         }
-        const userState = response.data as IUserState;
-        userStore.setState(userState);
+        const loginResponse = response.data as ILoginResponse;
+        userStore.setState(loginResponse);
+        menuStore.setState(loginResponse.menuRoutes);
 
         //需要转到选择角色页面 code=9
         if (response.code > 0) {
           router.push({ name: "SwitchRole", replace: true });
           return;
         }
+        //添加动态路由
+        if (menuStore.hasMenuRoutes) {
+          menuStore.loadAsyncMenuRoutes();
 
-        //返回了菜单和路由，就更新路由
-        if (userStore.hasMenuRoutes) {
-          userStore.flatMenuRoutes.forEach(item => {
-            item.children && delete item.children;
-            if (item.component && typeof item.component == "string") {
-              item.component = modules["/src/views" + item.component + ".vue"];
-            }
-            if (item.meta.isFull) {
-              router.addRoute(item as unknown as RouteRecordRaw);
-            } else {
-              router.addRoute("layout", item as unknown as RouteRecordRaw);
-            }
-          });
+          const keepAliveStore = useKeepAliveStore();
+          const tabPageStore = useTabPageStore();
+          keepAliveStore.setKeepAliveNames([]);
+          tabPageStore.setTabPages([]);
         }
 
-        // 3.清空 tabs、keepAlive 数据
-        tabPageStore.setTabPages([]);
-        keepAliveStore.setKeepAliveNames([]);
-
         // 4.跳转到首页
-        router.push({ name: "Home" });
+        router.push(HOME_URL);
         ElNotification({
           title: getTimeState(),
-          message: `登录成功，欢迎${userState.userName}`,
+          message: `登录成功，欢迎${userStore.userName}`,
           type: "success",
           duration: 3000
         });

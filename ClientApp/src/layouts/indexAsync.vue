@@ -16,6 +16,7 @@
   import { useGlobalStore } from "@/stores/global";
   import Loading from "@/components/Loading/index.vue";
   import ThemeDrawer from "./components/ThemeDrawer/index.vue";
+  import { LayoutType } from "@/stores/types";
 
   const LayoutComponents: Record<LayoutType, Component> = {
     vertical: defineAsyncComponent(() => import("./LayoutVertical/index.vue")),

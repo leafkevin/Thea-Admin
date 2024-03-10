@@ -82,12 +82,15 @@ class ModelConfiguration : IModelConfiguration
         {
             f.ToTable("sys_menu").Key(t => t.MenuId);
             f.Member(t => t.MenuId).Field(nameof(Menu.MenuId)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.RouteName).Field(nameof(Menu.RouteName)).NativeDbType(MySqlDbType.VarChar);
-            f.Member(t => t.MenuName).Field(nameof(Menu.MenuName)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.MenuName).Field(nameof(Menu.MenuName)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.RouteName).Field(nameof(Menu.RouteName)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.RouteUrl).Field(nameof(Menu.RouteUrl)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.RedirectUrl).Field(nameof(Menu.RedirectUrl)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.Description).Field(nameof(Menu.Description)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.ParentId).Field(nameof(Menu.ParentId)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.MenuType).Field(nameof(Menu.MenuType)).NativeDbType(MySqlDbType.UByte);
             f.Member(t => t.Icon).Field(nameof(Menu.Icon)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.IsStatic).Field(nameof(Menu.IsStatic)).NativeDbType(MySqlDbType.Bool);
             f.Member(t => t.Sequence).Field(nameof(Menu.Sequence)).NativeDbType(MySqlDbType.Int32);
             f.Member(t => t.Status).Field(nameof(Menu.Status)).NativeDbType(MySqlDbType.UByte).Required();
             f.Member(t => t.CreatedBy).Field(nameof(Menu.CreatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
@@ -103,29 +106,29 @@ class ModelConfiguration : IModelConfiguration
             f.Member(t => t.UpdatedBy).Field(nameof(RoleMenu.UpdatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
             f.Member(t => t.UpdatedAt).Field(nameof(RoleMenu.UpdatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
         });
-        builder.Entity<PageRoute>(f =>
+        builder.Entity<Route>(f =>
         {
-            f.ToTable("sys_page_route").Key(t => t.RouteId);
-            f.Member(t => t.RouteId).Field(nameof(PageRoute.RouteId)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.RouteName).Field(nameof(PageRoute.RouteName)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.RouteUrl).Field(nameof(PageRoute.RouteUrl)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.RouteTitle).Field(nameof(PageRoute.RouteTitle)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.Component).Field(nameof(PageRoute.Component)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.MenuId).Field(nameof(PageRoute.MenuId)).NativeDbType(MySqlDbType.VarChar);
-            f.Member(t => t.Description).Field(nameof(PageRoute.Description)).NativeDbType(MySqlDbType.VarChar);
-            f.Member(t => t.RedirectUrl).Field(nameof(PageRoute.RedirectUrl)).NativeDbType(MySqlDbType.VarChar);
-            f.Member(t => t.Icon).Field(nameof(PageRoute.Icon)).NativeDbType(MySqlDbType.VarChar);
-            f.Member(t => t.IsNeedAuth).Field(nameof(PageRoute.IsNeedAuth)).NativeDbType(MySqlDbType.Bool);
-            f.Member(t => t.IsHidden).Field(nameof(PageRoute.IsHidden)).NativeDbType(MySqlDbType.Bool);
-            f.Member(t => t.IsLink).Field(nameof(PageRoute.IsLink)).NativeDbType(MySqlDbType.Bool);
-            f.Member(t => t.IsFull).Field(nameof(PageRoute.IsFull)).NativeDbType(MySqlDbType.Bool);
-            f.Member(t => t.IsAffix).Field(nameof(PageRoute.IsAffix)).NativeDbType(MySqlDbType.Bool);
-            f.Member(t => t.IsKeepAlive).Field(nameof(PageRoute.IsKeepAlive)).NativeDbType(MySqlDbType.Bool);
-            f.Member(t => t.Status).Field(nameof(PageRoute.Status)).NativeDbType(MySqlDbType.UByte).Required();
-            f.Member(t => t.CreatedBy).Field(nameof(PageRoute.CreatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.CreatedAt).Field(nameof(PageRoute.CreatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
-            f.Member(t => t.UpdatedBy).Field(nameof(PageRoute.UpdatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
-            f.Member(t => t.UpdatedAt).Field(nameof(PageRoute.UpdatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
+            f.ToTable("sys_route").Key(t => t.RouteId);
+            f.Member(t => t.RouteId).Field(nameof(Route.RouteId)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.RouteName).Field(nameof(Route.RouteName)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.RouteUrl).Field(nameof(Route.RouteUrl)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.RouteTitle).Field(nameof(Route.RouteTitle)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.Component).Field(nameof(Route.Component)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.MenuId).Field(nameof(Route.MenuId)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.Description).Field(nameof(Route.Description)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.RedirectUrl).Field(nameof(Route.RedirectUrl)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.Icon).Field(nameof(Route.Icon)).NativeDbType(MySqlDbType.VarChar);
+            f.Member(t => t.IsStatic).Field(nameof(Route.IsStatic)).NativeDbType(MySqlDbType.Bool);
+            f.Member(t => t.IsHidden).Field(nameof(Route.IsHidden)).NativeDbType(MySqlDbType.Bool);
+            f.Member(t => t.IsLink).Field(nameof(Route.IsLink)).NativeDbType(MySqlDbType.Bool);
+            f.Member(t => t.IsFull).Field(nameof(Route.IsFull)).NativeDbType(MySqlDbType.Bool);
+            f.Member(t => t.IsAffix).Field(nameof(Route.IsAffix)).NativeDbType(MySqlDbType.Bool);
+            f.Member(t => t.IsKeepAlive).Field(nameof(Route.IsKeepAlive)).NativeDbType(MySqlDbType.Bool);
+            f.Member(t => t.Status).Field(nameof(Route.Status)).NativeDbType(MySqlDbType.UByte).Required();
+            f.Member(t => t.CreatedBy).Field(nameof(Route.CreatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.CreatedAt).Field(nameof(Route.CreatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
+            f.Member(t => t.UpdatedBy).Field(nameof(Route.UpdatedBy)).NativeDbType(MySqlDbType.VarChar).Required();
+            f.Member(t => t.UpdatedAt).Field(nameof(Route.UpdatedAt)).NativeDbType(MySqlDbType.DateTime).Required();
         });
     }
 }

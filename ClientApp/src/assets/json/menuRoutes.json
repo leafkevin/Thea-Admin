@@ -1,0 +1,322 @@
+{
+  "isSuccess": true,
+  "code": 200,
+  "data": [
+    {
+      "path": "/home",
+      "isPage": true,
+      "redirect": "/home/index",
+      "meta": {
+        "title": "首页",
+        "icon": "HomeFilled",
+        "isHidden": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      },
+      "children": [
+        {
+          "path": "/home/index",
+          "name": "Home",
+          "component": "/home/index",
+          "isPage": true,
+          "meta": {
+            "title": "首页",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": true,
+            "isKeepAlive": true,
+            "menuPath": "/home"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/memberMgt",
+      "isPage": false,
+      "meta": {
+        "title": "会员管理",
+        "icon": "Avatar",
+        "isHidden": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      },
+      "children": [
+        {
+          "path": "/member",
+          "isPage": true,
+          "redirect": "/member/index",
+          "meta": {
+            "title": "会员列表",
+            "icon": "UserFilled",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/member/index",
+              "name": "MemberList",
+              "component": "/member/index",
+              "isPage": true,
+              "meta": {
+                "title": "会员列表",
+                "isHidden": false,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/member"
+              }
+            },
+            {
+              "path": "/member/edit",
+              "name": "MemberEdit",
+              "component": "/member/form",
+              "isPage": true,
+              "meta": {
+                "title": "会员编辑",
+                "isHidden": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/member"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/deposit",
+          "isPage": true,
+          "redirect": "/deposit/index",
+          "meta": {
+            "title": "充值管理",
+            "icon": "UserFilled",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/deposit/index",
+              "name": "DepositList",
+              "component": "/deposit/index",
+              "isPage": true,
+              "meta": {
+                "title": "充值列表",
+                "isHidden": false,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/deposit"
+              }
+            },
+            {
+              "path": "/deposit/edit",
+              "name": "DepositEdit",
+              "component": "/deposit/form",
+              "isPage": true,
+              "meta": {
+                "title": "会员充值",
+                "isHidden": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/deposit"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/systemMgt",
+      "isPage": false,
+      "meta": {
+        "title": "系统管理",
+        "icon": "Avatar",
+        "isHidden": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      },
+      "children": [
+        {
+          "path": "/user",
+          "isPage": true,
+          "redirect": "/user/index",
+          "meta": {
+            "title": "用户管理",
+            "icon": "UserFilled",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/user/index",
+              "name": "UserList",
+              "component": "/user/index",
+              "isPage": true,
+              "meta": {
+                "title": "用户列表",
+                "isHidden": false,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/user"
+              }
+            },
+            {
+              "path": "/user/edit",
+              "name": "UserEdit",
+              "component": "/user/form",
+              "isPage": true,
+              "meta": {
+                "title": "用户编辑",
+                "isHidden": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/user"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/role",
+          "isPage": true,
+          "redirect": "/role/index",
+          "meta": {
+            "title": "角色管理",
+            "icon": "UserFilled",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/role/index",
+              "name": "RoleList",
+              "component": "/role/index",
+              "isPage": true,
+              "meta": {
+                "title": "角色列表",
+                "isHidden": false,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/role"
+              }
+            },
+            {
+              "path": "/role/edit",
+              "name": "RoleEdit",
+              "component": "/role/edit",
+              "isPage": true,
+              "meta": {
+                "title": "角色编辑",
+                "isHidden": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/role"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/menu",
+          "isPage": true,
+          "redirect": "/menu/index",
+          "meta": {
+            "title": "菜单管理",
+            "icon": "UserFilled",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/menu/index",
+              "name": "MenuList",
+              "component": "/menu/index",
+              "isPage": true,
+              "meta": {
+                "title": "菜单列表",
+                "isHidden": false,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/menu"
+              }
+            },
+            {
+              "path": "/menu/edit",
+              "name": "MenurEdit",
+              "component": "/menu/form",
+              "isPage": true,
+              "meta": {
+                "title": "菜单编辑",
+                "isHidden": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/menu"
+              }
+            }
+          ]
+        },
+        {
+          "path": "/auth",
+          "isPage": true,
+          "redirect": "/auth/index",
+          "meta": {
+            "title": "授权管理",
+            "icon": "UserFilled",
+            "isHidden": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/auth/index",
+              "name": "AuthList",
+              "component": "/auth/index",
+              "isPage": true,
+              "meta": {
+                "title": "授权列表",
+                "isHidden": false,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/auth"
+              }
+            },
+            {
+              "path": "/auth/form",
+              "name": "AuthEdit",
+              "component": "/auth/form",
+              "isPage": true,
+              "meta": {
+                "title": "用户授权",
+                "isHidden": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true,
+                "menuPath": "/auth"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "message": "成功"
+}

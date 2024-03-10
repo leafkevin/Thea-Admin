@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { DEFAULT_PRIMARY } from "@/config";
+import { IGlobalState } from "./types";
 
 export const useGlobalStore = defineStore({
   id: "globalState",

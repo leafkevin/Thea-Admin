@@ -22,14 +22,14 @@
   import { useRoute, useRouter } from "vue-router";
   import { useGlobalStore } from "@/stores/global";
   import { useTabPageStore } from "@/stores/tabPages";
-  import { useUserStore } from "@/stores/account";
   import { TabsPaneContext, TabPaneName } from "element-plus";
   import MoreButton from "./components/MoreButton.vue";
+  import { useMenuStore } from "@/stores/menu";
 
   const route = useRoute();
   const router = useRouter();
   const tabPageStore = useTabPageStore();
-  const userStore = useUserStore();
+  const menuStore = useMenuStore();
   const globalStore = useGlobalStore();
 
   const tabPagePath = ref(route.fullPath);
@@ -62,7 +62,7 @@
 
   // 初始化需要固定的 tabs
   const initTabPages = () => {
-    userStore.flatMenuRoutes.forEach(item => {
+    menuStore.flatMenuRoutes.forEach(item => {
       if (item.meta.isAffix && !item.meta.isHidden && !item.meta.isFull) {
         const tabsParams = {
           icon: item.meta.icon,

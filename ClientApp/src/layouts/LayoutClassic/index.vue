@@ -38,21 +38,21 @@
 <script setup lang="ts" name="layoutClassic">
   import { computed } from "vue";
   import { useRoute } from "vue-router";
-  import { useUserStore } from "@/stores/account";
   import { useGlobalStore } from "@/stores/global";
   import Main from "@/layouts/components/Main/index.vue";
   import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
   import ToolBarLeft from "@/layouts/components/Header/ToolBarLeft.vue";
   import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
+  import { useMenuStore } from "@/stores/menu";
 
   const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
   const route = useRoute();
   const globalStore = useGlobalStore();
-  const userStore = useUserStore();
+  const menuStore = useMenuStore();
   const accordion = computed(() => globalStore.accordion);
   const isCollapse = computed(() => globalStore.isCollapse);
-  const menuList = computed(() => userStore.menuRoutes);
+  const menuList = computed(() => menuStore.menuRoutes);
   const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string);
 </script>
 
