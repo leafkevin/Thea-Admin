@@ -51,7 +51,7 @@ export const useMenuStore = defineStore("menu", () => {
    */
   function getBreadcrumbs(menuRoutes: IMenuRoute[], parent = [], result: { [key: string]: any } = {}) {
     for (const item of menuRoutes) {
-      if (item.isPage) {
+      if (item.meta.isPage) {
         if (item.children && item.children?.length > 0) {
           result[item.path] = [...parent, item];
           getBreadcrumbs(item.children, result[item.path], result);
