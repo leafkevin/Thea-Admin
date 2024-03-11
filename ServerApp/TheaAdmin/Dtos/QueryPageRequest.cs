@@ -2,11 +2,10 @@
 
 namespace Thea;
 
-public class QueryPageRequest
+public class QueryRequest
 {
     private int _pageIndex;
     private int _pageSize;
-    public string QueryText { get; set; }
     public DataStatus? Status { get; set; }
     public int PageIndex
     {
@@ -31,4 +30,8 @@ public class QueryPageRequest
             this._pageSize = value;
         }
     }
+}
+public class QueryPageRequest : QueryRequest
+{
+    public string QueryText { get; set; }
 }

@@ -11,7 +11,7 @@
  Target Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 10/03/2024 18:58:22
+ Date: 11/03/2024 20:47:21
 */
 
 SET NAMES utf8mb4;
@@ -180,6 +180,38 @@ INSERT INTO `sys_menu` VALUES ('2', '店员角色根菜单', 'EmpRoot', NULL, NU
 INSERT INTO `sys_menu` VALUES ('21', '会员管理', 'memberMgt', '/memberMgt', '/member/index', NULL, '2', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_menu` VALUES ('211', '会员列表', 'memberList', '/member', NULL, NULL, '22', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_menu` VALUES ('212', '充值管理', 'depositList', '/deposit', NULL, NULL, '22', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+
+-- ----------------------------
+-- Table structure for sys_menu_page
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_menu_page`;
+CREATE TABLE `sys_menu_page`  (
+  `MenuId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单ID',
+  `RouteId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '路由ID',
+  `UpdatedBy` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后更新人',
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() COMMENT '最后更新日期',
+  PRIMARY KEY (`MenuId`, `RouteId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单页面关联表，描述菜单与页面路由的关联关系' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_menu_page
+-- ----------------------------
+INSERT INTO `sys_menu_page` VALUES ('11', '1', '1', '2024-03-10 09:23:26');
+INSERT INTO `sys_menu_page` VALUES ('11', '3', '1', '2024-03-10 09:49:32');
+INSERT INTO `sys_menu_page` VALUES ('11', '4', '1', '2024-03-10 09:49:38');
+INSERT INTO `sys_menu_page` VALUES ('11', '5', '1', '2024-03-10 09:49:44');
+INSERT INTO `sys_menu_page` VALUES ('121', '11', '1', '2024-03-10 08:39:49');
+INSERT INTO `sys_menu_page` VALUES ('121', '12', '1', '2024-03-10 09:29:58');
+INSERT INTO `sys_menu_page` VALUES ('122', '13', '1', '2024-03-10 09:05:01');
+INSERT INTO `sys_menu_page` VALUES ('122', '14', '1', '2024-03-10 09:30:48');
+INSERT INTO `sys_menu_page` VALUES ('123', '15', '1', '2024-03-10 09:24:11');
+INSERT INTO `sys_menu_page` VALUES ('123', '16', '1', '2024-03-10 09:31:19');
+INSERT INTO `sys_menu_page` VALUES ('124', '17', '1', '2024-03-10 09:24:11');
+INSERT INTO `sys_menu_page` VALUES ('124', '18', '1', '2024-03-10 09:31:53');
+INSERT INTO `sys_menu_page` VALUES ('131', '31', '1', '2024-03-10 09:52:47');
+INSERT INTO `sys_menu_page` VALUES ('131', '32', '1', '2024-03-10 09:52:54');
+INSERT INTO `sys_menu_page` VALUES ('132', '41', '1', '2024-03-10 09:53:51');
+INSERT INTO `sys_menu_page` VALUES ('132', '42', '1', '2024-03-10 09:54:14');
 
 -- ----------------------------
 -- Table structure for sys_role
