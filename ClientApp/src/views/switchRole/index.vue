@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { ref, reactive, onMounted } from "vue";
   import { IRoleState } from "./types";
-  import { ColumnProps } from "@/components/ProTable/interface/index";
+  import { IColumnProps } from "@/components/ProTable/interface/index";
   import { ILoginResponse, getMyRoles, switchRole as switchRoleApi } from "@/api/account";
   import { useRouter } from "vue-router";
   import { getTimeState } from "@/utils";
@@ -32,7 +32,7 @@
   const dataList = ref<IRoleState[]>([]);
 
   // 表格配置项
-  const columns = reactive<ColumnProps<IRoleState>[]>([
+  const columns = reactive<IColumnProps<IRoleState>[]>([
     { prop: "roleId", label: "角色ID", width: 120 },
     { prop: "roleName", label: "角色名称", width: 120 },
     { prop: "description", label: "描述" },

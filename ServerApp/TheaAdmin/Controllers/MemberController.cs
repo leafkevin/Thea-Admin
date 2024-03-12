@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TheaAdmin.Domain.Models;
-using TheaAdmin.Dtos;
 using System;
-using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Thea;
+using TheaAdmin.Domain;
+using TheaAdmin.Domain.Models;
+using TheaAdmin.Dtos;
 using Trolley;
 
 namespace TheaAdmin.Controllers;
@@ -21,12 +22,13 @@ public class MemberController : ControllerBase
         this.dbFactory = dbFactory;
     }
     [HttpPost]
-    public async Task<TheaResponse> QueryPage(QueryPageRequest request)
+    public async Task<TheaResponse> QueryPage([FromBody] MemberQueryRequest request)
     {
         using var repository = this.dbFactory.Create();
         var result = await repository.From<Member>()
-            .Where(!string.IsNullOrEmpty(request.QueryText), f => f.Mobile.Contains(request.QueryText)
-                || f.MemberName.Contains(request.QueryText))
+            .Where(f => f.Status == DataStatus.Active)
+            .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
+            .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile))
             .Page(request.PageIndex, request.PageSize)
             .Select(f => new
             {
@@ -42,7 +44,7 @@ public class MemberController : ControllerBase
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
-    public async Task<TheaResponse> Create(MemberRequest request)
+    public async Task<TheaResponse> Create([FromBody] MemberRequest request)
     {
         if (string.IsNullOrEmpty(request.MemberName))
             return TheaResponse.Fail(1, $"会员姓名不能为空");
@@ -71,7 +73,7 @@ public class MemberController : ControllerBase
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
-    public async Task<TheaResponse> Modify(MemberRequest request)
+    public async Task<TheaResponse> Modify([FromBody] MemberRequest request)
     {
         if (string.IsNullOrEmpty(request.MemberId))
             return TheaResponse.Fail(1, $"会员ID不能为空");
@@ -99,7 +101,7 @@ public class MemberController : ControllerBase
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
-    public async Task<TheaResponse> Delete(IdRequest request)
+    public async Task<TheaResponse> Delete([FromBody] IdRequest request)
     {
         if (string.IsNullOrEmpty(request.Id))
             return TheaResponse.Fail(1, $"会员ID不能为空");
@@ -116,6 +118,69 @@ public class MemberController : ControllerBase
         });
         if (result <= 0)
             return TheaResponse.Fail(2, $"操作失败，请重试");
+        return TheaResponse.Succeed(result);
+    }
+    [HttpPost]
+    public async Task<TheaResponse> BatchDelete([FromBody] IdsRequest request)
+    {
+        if (request.Ids == null || request.Ids.Count == 0)
+            return TheaResponse.Fail(1, $"至少要选择一个会员，才能批量删除");
+
+        var passport = this.User.ToPassport();
+
+        using var repository = this.dbFactory.Create();
+        var entities = request.Ids.Select(f => new
+        {
+            MemberId = f,
+            Status = 2,
+            UpdatedAt = DateTime.Now,
+            UpdatedBy = passport.UserId
+        });
+        var result = await repository.UpdateAsync<Member>(entities);
+        if (result <= 0)
+            return TheaResponse.Fail(2, $"操作失败，请重试");
+        return TheaResponse.Succeed(result);
+    }
+    [HttpPost]
+    public async Task<TheaResponse> Import([FromBody] MemberQueryRequest request)
+    {
+        using var repository = this.dbFactory.Create();
+        var result = await repository.From<Member>()
+            .Where(f => f.Status == DataStatus.Active)
+            .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
+            .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile))
+            .Select(f => new
+            {
+                f.MemberId,
+                f.MemberName,
+                f.Mobile,
+                f.Gender,
+                f.Balance,
+                f.Description,
+                f.CreatedAt
+            })
+            .ToListAsync();
+        return TheaResponse.Succeed(result);
+    }
+    [HttpPost]
+    public async Task<TheaResponse> Export([FromBody] MemberQueryRequest request)
+    {
+        using var repository = this.dbFactory.Create();
+        var result = await repository.From<Member>()
+            .Where(f => f.Status == DataStatus.Active)
+            .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
+            .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile)) 
+            .Select(f => new
+            {
+                f.MemberId,
+                f.MemberName,
+                f.Mobile,
+                f.Gender,
+                f.Balance,
+                f.Description,
+                f.CreatedAt
+            })
+            .ToListAsync(); 
         return TheaResponse.Succeed(result);
     }
 }

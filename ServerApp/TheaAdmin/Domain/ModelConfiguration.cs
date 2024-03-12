@@ -88,7 +88,7 @@ class ModelConfiguration : IModelConfiguration
             f.Member(t => t.RedirectUrl).Field(nameof(Menu.RedirectUrl)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.Description).Field(nameof(Menu.Description)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.ParentId).Field(nameof(Menu.ParentId)).NativeDbType(MySqlDbType.VarChar);
-            f.Member(t => t.MenuType).Field(nameof(Menu.MenuType)).NativeDbType(MySqlDbType.Byte);
+            f.Member(t => t.RouteType).Field(nameof(Menu.RouteType)).NativeDbType(MySqlDbType.UByte);
             f.Member(t => t.Icon).Field(nameof(Menu.Icon)).NativeDbType(MySqlDbType.VarChar);
             f.Member(t => t.IsStatic).Field(nameof(Menu.IsStatic)).NativeDbType(MySqlDbType.Bool);
             f.Member(t => t.Sequence).Field(nameof(Menu.Sequence)).NativeDbType(MySqlDbType.Int32);

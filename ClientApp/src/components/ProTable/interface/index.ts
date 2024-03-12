@@ -68,7 +68,7 @@ export type HeaderRenderScope<T> = {
   [key: string]: any;
 };
 
-export interface ColumnProps<T = any>
+export interface IColumnProps<T = any>
   extends Partial<Omit<TableColumnCtx<T>, "type" | "children" | "renderCell" | "renderHeader">> {
   type?: TypeProps; // 列类型
   tag?: boolean | Ref<boolean>; // 是否是标签展示
@@ -79,7 +79,7 @@ export interface ColumnProps<T = any>
   fieldNames?: FieldNamesProps; // 指定 label && value && children 的 key 值
   headerRender?: (scope: HeaderRenderScope<T>) => VNode; // 自定义表头内容渲染（tsx语法）
   render?: (scope: RenderScope<T>) => VNode | string; // 自定义单元格内容渲染（tsx语法）
-  _children?: ColumnProps<T>[]; // 多级表头
+  _children?: IColumnProps<T>[]; // 多级表头
 }
 
 export type ProTableInstance = Omit<InstanceType<typeof ProTable>, keyof ComponentPublicInstance | keyof ProTableProps>;

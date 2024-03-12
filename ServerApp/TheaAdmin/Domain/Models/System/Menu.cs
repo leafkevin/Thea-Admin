@@ -36,9 +36,9 @@ public class Menu
     /// </summary>
     public string ParentId { get; set; }
     /// <summary>
-    /// 菜单类型
+    /// 路由类型
     /// </summary>
-    public MenuType MenuType { get; set; }
+    public RouteType RouteType { get; set; }
     /// <summary>
     /// 图标
     /// </summary>

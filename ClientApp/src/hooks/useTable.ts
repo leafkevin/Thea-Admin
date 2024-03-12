@@ -1,48 +1,49 @@
-import { Table } from "./interface";
+import { ElNotification } from "element-plus";
+import { IPagingData, IPagingState, ITableState } from "./interface";
 import { reactive, computed, toRefs } from "vue";
 
 /**
  * @description table 页面操作方法封装
  * @param {Function} api 获取表格数据 api 方法 (必传)
- * @param {Object} initParam 获取数据初始化参数 (非必传，默认为{})
- * @param {Boolean} isPageable 是否有分页 (非必传，默认为true)
+ * @param {Object} initParameters 获取数据初始化参数 (非必传，默认为{})
+ * @param {Boolean} isPaging 是否有分页 (非必传，默认为true)
  * @param {Function} dataCallBack 对后台返回的数据进行处理的方法 (非必传)
  * */
 export const useTable = (
   api?: (params: any) => Promise<any>,
-  initParam: object = {},
-  isPageable: boolean = true,
-  dataCallBack?: (data: any) => any,
+  initParameters: object = {},
+  isPaging: boolean = true,
+  //dataCallBack?: (data: any) => any,
   requestError?: (error: any) => void
 ) => {
-  const state = reactive<Table.StateProps>({
+  const state = reactive<ITableState>({
     // 表格数据
     tableData: [],
     // 分页数据
-    pageable: {
+    pagination: {
       // 当前页数
-      pageNum: 1,
+      pageNumber: 1,
       // 每页显示条数
       pageSize: 10,
       // 总条数
       total: 0
     },
     // 查询参数(只包括查询)
-    searchParam: {},
+    searchParameters: {},
     // 初始化默认的查询参数
-    searchInitParam: {},
+    searchInitParameters: {},
     // 总参数(包含分页和查询参数)
-    totalParam: {}
+    totalParameters: {}
   });
 
   /**
    * @description 分页查询参数(只包括分页和表格字段排序,其他排序方式可自行配置)
    * */
-  const pageParam = computed({
+  const pagingParameters = computed({
     get: () => {
       return {
-        pageNum: state.pageable.pageNum,
-        pageSize: state.pageable.pageSize
+        pageNum: state.pagination.pageNumber,
+        pageSize: state.pagination.pageSize
       };
     },
     set: (newVal: any) => {
@@ -58,15 +59,22 @@ export const useTable = (
     if (!api) return;
     try {
       // 先把初始化参数和分页参数放到总参数里面
-      Object.assign(state.totalParam, initParam, isPageable ? pageParam.value : {});
-      let { data } = await api({ ...state.searchInitParam, ...state.totalParam });
-      dataCallBack && (data = dataCallBack(data));
-      state.tableData = isPageable ? data.list : data;
-      // 解构后台返回的分页数据 (如果有分页更新分页信息)
-      if (isPageable) {
-        const { pageNum, pageSize, total } = data;
-        updatePageable({ pageNum, pageSize, total });
+      Object.assign(state.totalParameters, initParameters, isPaging ? pagingParameters.value : {});
+      let response = await api({ ...state.searchInitParameters, ...state.totalParameters });
+      if (!response.isSuccess) {
+        ElNotification({
+          title: "登录失败",
+          message: `登录失败，${response.message}，code:${response.code}`,
+          type: "error"
+        });
       }
+      // dataCallBack && (data = dataCallBack(response.data));
+      if (isPaging) {
+        // 解构后台返回的分页数据 (如果有分页更新分页信息)
+        const pagingData = response.data as IPagingData;
+        state.tableData = pagingData.data;
+        updatePaging({ pageNumber: pagingData.pageIndex + 1, pageSize: pagingData.pageSize, total: pagingData.totalCount });
+      } else state.tableData = response.data;
     } catch (error) {
       requestError && requestError(error);
     }
@@ -76,27 +84,27 @@ export const useTable = (
    * @description 更新查询参数
    * @return void
    * */
-  const updatedTotalParam = () => {
-    state.totalParam = {};
+  const updatedTotalParameters = () => {
+    state.totalParameters = {};
     // 处理查询参数，可以给查询参数加自定义前缀操作
-    let nowSearchParam: Table.StateProps["searchParam"] = {};
+    let nowSearchParam: ITableState["searchParameters"] = {};
     // 防止手动清空输入框携带参数（这里可以自定义查询参数前缀）
-    for (let key in state.searchParam) {
+    for (let key in state.searchParameters) {
       // 某些情况下参数为 false/0 也应该携带参数
-      if (state.searchParam[key] || state.searchParam[key] === false || state.searchParam[key] === 0) {
-        nowSearchParam[key] = state.searchParam[key];
+      if (state.searchParameters[key] || state.searchParameters[key] === false || state.searchParameters[key] === 0) {
+        nowSearchParam[key] = state.searchParameters[key];
       }
     }
-    Object.assign(state.totalParam, nowSearchParam, isPageable ? pageParam.value : {});
+    Object.assign(state.totalParameters, nowSearchParam, isPaging ? pagingParameters.value : {});
   };
 
   /**
    * @description 更新分页信息
-   * @param {Object} pageable 后台返回的分页数据
+   * @param {Object} pagingState 后台返回的分页数据
    * @return void
    * */
-  const updatePageable = (pageable: Table.Pageable) => {
-    Object.assign(state.pageable, pageable);
+  const updatePaging = (pagingState: IPagingState) => {
+    Object.assign(state.pagination, pagingState);
   };
 
   /**
@@ -104,8 +112,8 @@ export const useTable = (
    * @return void
    * */
   const search = () => {
-    state.pageable.pageNum = 1;
-    updatedTotalParam();
+    state.pagination.pageNumber = 1;
+    updatedTotalParameters();
     getTableList();
   };
 
@@ -114,10 +122,10 @@ export const useTable = (
    * @return void
    * */
   const reset = () => {
-    state.pageable.pageNum = 1;
+    state.pagination.pageNumber = 1;
     // 重置搜索表单的时，如果有默认搜索参数，则重置默认的搜索参数
-    state.searchParam = { ...state.searchInitParam };
-    updatedTotalParam();
+    state.searchParameters = { ...state.searchInitParameters };
+    updatedTotalParameters();
     getTableList();
   };
 
@@ -127,8 +135,8 @@ export const useTable = (
    * @return void
    * */
   const handleSizeChange = (val: number) => {
-    state.pageable.pageNum = 1;
-    state.pageable.pageSize = val;
+    state.pagination.pageNumber = 1;
+    state.pagination.pageSize = val;
     getTableList();
   };
 
@@ -138,7 +146,7 @@ export const useTable = (
    * @return void
    * */
   const handleCurrentChange = (val: number) => {
-    state.pageable.pageNum = val;
+    state.pagination.pageNumber = val;
     getTableList();
   };
 
@@ -149,6 +157,6 @@ export const useTable = (
     reset,
     handleSizeChange,
     handleCurrentChange,
-    updatedTotalParam
+    updatedTotalParam: updatedTotalParameters
   };
 };

@@ -99,7 +99,7 @@ public class ProfileService
             return TheaResponse.Fail(1, "没有配置任何菜单数据");
 
         var rootId = menuItems.First(f => !string.IsNullOrEmpty(f.ParentId)).ParentId;
-        var menuIds = menuItems.FindAll(f => f.MenuType == MenuType.Page).Select(f => f.MenuId).ToList();
+        var menuIds = menuItems.FindAll(f => f.RouteType == RouteType.Leaf).Select(f => f.MenuId).ToList();
         var myPages = await repository.From<Route>()
             .LeftJoin<MenuPage>((a, b) => a.RouteId == b.RouteId)
             .Where((a, b) => a.Status == DataStatus.Active && (menuIds.Contains(b.MenuId) || a.IsStatic))
@@ -144,13 +144,13 @@ public class ProfileService
                 {
                     Title = myMenu.MenuName,
                     Icon = myMenu.Icon,
-                    IsPage = myMenu.MenuType == MenuType.Page,
+                    RouteType = myMenu.RouteType
                 },
                 Children = new(),
                 Sequence = myMenu.Sequence
             };
             menuRoutes.Add(menuRoute);
-            if (myMenu.MenuType == MenuType.Page)
+            if (myMenu.RouteType == RouteType.Leaf)
             {
                 var myPages = pages.FindAll(f => f.MenuId == myMenu.MenuId);
                 //菜单有页面，就有redirect
@@ -167,7 +167,7 @@ public class ProfileService
                         Meta = new MenuRouteMetaDto
                         {
                             Title = myPage.RouteTitle,
-                            IsPage = true
+                            RouteType = RouteType.Page
                         }
                     });
                     myPageRoute.Meta.MenuPath = myMenu.RouteUrl;

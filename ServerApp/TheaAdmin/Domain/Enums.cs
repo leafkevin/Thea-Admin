@@ -13,10 +13,22 @@ public enum Gender : byte
     Male,
     Female
 }
-public enum MenuType : byte
+public enum RouteType : byte
 {
-    Unknown,
+    /// <summary>
+    /// 角色菜单
+    /// </summary>
     Root,
+    /// <summary>
+    /// 菜单项
+    /// </summary>
     Menu,
+    /// <summary>
+    /// 叶子菜单，链接页面
+    /// </summary>
+    Leaf,
+    /// <summary>
+    /// 组件路由
+    /// </summary>
     Page
 }

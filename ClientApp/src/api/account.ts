@@ -1,10 +1,6 @@
 import { IMenuRoute } from "@/stores/types";
 import { http } from "./http";
 
-export interface ILoginRequest {
-  userAccount: string;
-  password: string;
-}
 export interface ILoginResponse {
   userId: string;
   userName: string;
@@ -15,13 +11,13 @@ export interface ILoginResponse {
   menuRoutes: IMenuRoute[];
 }
 
-export const login = (parameters: { userAccount: string; password: string }) => {
+export const login = (parameters: object) => {
   return http.post("/account/login", parameters);
 };
-export const refreshToken = (parameters: { refreshToken: string | undefined }) => {
+export const refreshToken = (parameters: object) => {
   return http.post("/account/refreshToken", parameters);
 };
-export const resetPassword = (parameters: { password: string }) => {
+export const resetPassword = (parameters: object) => {
   return http.post("/profile/resetPassword", parameters);
 };
 export const getMyRoles = () => {

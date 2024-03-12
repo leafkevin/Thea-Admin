@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using TheaAdmin.Domain;
 
 namespace TheaAdmin.Dtos;
 
@@ -23,7 +24,7 @@ public class MenuRouteMetaDto
     public string Title { get; set; }
     public string Icon { get; set; }
     public string LinkUrl { get; set; }
-    public bool IsPage { get; set; }
+    public RouteType RouteType { get; set; }
     public bool IsHidden { get; set; }
     public bool IsFull { get; set; }
     public bool IsAffix { get; set; }

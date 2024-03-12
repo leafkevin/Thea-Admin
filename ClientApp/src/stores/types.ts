@@ -56,7 +56,8 @@ export interface IMenuRoute {
 export interface IMenuRouteMeta {
   title: string;
   icon: string;
-  isPage: boolean;
+  //1:menu item, 2:leaf menu item, 3:component
+  routeType: number;
   linkUrl?: string;
   isHidden: boolean;
   isFull: boolean;

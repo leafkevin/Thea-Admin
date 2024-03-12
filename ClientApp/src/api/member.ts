@@ -1,35 +1,28 @@
-import { IMenuRoute } from "@/stores/types";
 import { http } from "./http";
 
-export interface ILoginRequest {
-  userAccount: string;
-  password: string;
+export interface IMemberSate {
+  memberId?: string;
+  memberName: string;
+  mobile: string;
+  gender: number;
+  balance: number;
+  description: string;
 }
-export interface ILoginResponse {
-  userId: string;
-  userName: string;
-  accessToken: string;
-  refreshToken: string;
-  expires: number;
-  roles: string;
-  menuRoutes: IMenuRoute[];
-}
-
-export const queryPage = (parameters: { userName: string; password: string }) => {
-  return http.post("/account/login", parameters);
+export const queryPage = (parameters: object) => {
+  return http.post("/member/queryPage", parameters);
 };
-export const create = (parameters: { refreshToken: string | undefined }) => {
-  return http.post("/account/refreshToken", parameters);
+export const createMember = (parameters: object) => {
+  return http.post("/member/create", parameters);
 };
-export const resetPassword = (parameters: { password: string }) => {
-  return http.post("/profile/resetPassword", parameters);
+export const modifyMember = (parameters: object) => {
+  return http.post("/member/modify", parameters);
 };
-export const getMyRoles = () => {
-  return http.get("/profile/getMyRoles", {});
+export const deleteMember = (parameters: object) => {
+  return http.post("/member/delete", parameters);
 };
-export const getMyRoutes = () => {
-  return http.get("/profile/getMyRoutes", {});
+export const batchDeleteMembers = (parameters: object) => {
+  return http.get("/member/batchDelete", parameters);
 };
-export const switchRole = (parameters: { roleId: string }) => {
-  return http.post("/profile/switchRole", parameters);
+export const exportMembers = (parameters: object) => {
+  return http.get("/member/export", parameters);
 };

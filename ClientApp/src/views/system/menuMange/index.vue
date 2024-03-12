@@ -22,7 +22,7 @@
 
 <script setup lang="ts" name="menuMange">
   import { ref } from "vue";
-  import { ColumnProps } from "@/components/ProTable/interface";
+  import { IColumnProps } from "@/components/ProTable/interface";
   import { Delete, EditPen, CirclePlus } from "@element-plus/icons-vue";
   import authMenuList from "@/assets/json/menuRoutes.json";
   import ProTable from "@/components/ProTable/index.vue";
@@ -31,7 +31,7 @@
   const menuData = ref(authMenuList.data);
 
   // 表格配置项
-  const columns: ColumnProps[] = [
+  const columns: IColumnProps[] = [
     { prop: "meta.title", label: "菜单名称", align: "left", search: { el: "input" } },
     { prop: "meta.icon", label: "菜单图标" },
     { prop: "name", label: "菜单 name", search: { el: "input" } },

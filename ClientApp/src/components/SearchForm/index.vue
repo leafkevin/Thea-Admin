@@ -1,7 +1,7 @@
 <template>
   <div v-if="columns.length" class="card table-search">
-    <el-form ref="formRef" :model="searchParam">
-      <Grid ref="gridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
+    <el-form ref="formRef" :model="searchParameters">
+      <Grid ref="gridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchColumnWidths">
         <GridItem v-for="(item, index) in columns" :key="item.prop" v-bind="getResponsive(item)" :index="index">
           <el-form-item>
             <template #label>
@@ -13,7 +13,7 @@
               </el-space>
               <span>:</span>
             </template>
-            <SearchFormItem :column="item" :search-param="searchParam" />
+            <SearchFormItem :column="item" :search-parameters="searchParameters!" />
           </el-form-item>
         </GridItem>
         <GridItem suffix>
@@ -34,29 +34,29 @@
 </template>
 <script setup lang="ts" name="SearchForm">
   import { computed, ref } from "vue";
-  import { ColumnProps } from "@/components/ProTable/interface";
+  import { IColumnProps } from "@/components/ProTable/interface";
   import { BreakPoint } from "@/components/Grid/interface";
   import { Delete, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
   import SearchFormItem from "./components/SearchFormItem.vue";
   import Grid from "@/components/Grid/index.vue";
   import GridItem from "@/components/Grid/components/GridItem.vue";
 
-  interface ProTableProps {
-    columns?: ColumnProps[]; // 搜索配置列
-    searchParam?: { [key: string]: any }; // 搜索参数
-    searchCol: number | Record<BreakPoint, number>;
+  interface IProTableProps {
+    columns?: IColumnProps[]; // 搜索配置列
+    searchParameters?: { [key: string]: any }; // 搜索参数
+    searchColumnWidths: number | Record<BreakPoint, number>;
     search: (params: any) => void; // 搜索方法
     reset: (params: any) => void; // 重置方法
   }
 
   // 默认值
-  const props = withDefaults(defineProps<ProTableProps>(), {
+  const props = withDefaults(defineProps<IProTableProps>(), {
     columns: () => [],
     searchParam: () => ({})
   });
 
   // 获取响应式设置
-  const getResponsive = (item: ColumnProps) => {
+  const getResponsive = (item: IColumnProps) => {
     return {
       span: item.search?.span,
       offset: item.search?.offset ?? 0,
@@ -82,10 +82,10 @@
       prev +=
         (current.search![breakPoint.value]?.span ?? current.search?.span ?? 1) +
         (current.search![breakPoint.value]?.offset ?? current.search?.offset ?? 0);
-      if (typeof props.searchCol !== "number") {
-        if (prev >= props.searchCol[breakPoint.value]) show = true;
+      if (typeof props.searchColumnWidths !== "number") {
+        if (prev >= props.searchColumnWidths[breakPoint.value]) show = true;
       } else {
-        if (prev >= props.searchCol) show = true;
+        if (prev >= props.searchColumnWidths) show = true;
       }
       return prev;
     }, 0);

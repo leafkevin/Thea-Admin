@@ -1,8 +1,8 @@
 <template>
   <component
     :is="column.search?.render ?? `el-${column.search?.el}`"
-    v-bind="{ ...handleSearchProps, ...placeholder, searchParam: _searchParam, clearable }"
-    v-model.trim="_searchParam[column.search?.key ?? handleProp(column.prop!)]"
+    v-bind="{ ...handleSearchProps, ...placeholder, searchParameters: _searchParameters, clearable }"
+    v-model.trim="_searchParameters[column.search?.key ?? handleProp(column.prop!)]"
     :data="column.search?.el === 'tree-select' ? columnEnum : []"
     :options="['cascader', 'select-v2'].includes(column.search?.el!) ? columnEnum : []">
     <template v-if="column.search?.el === 'cascader'" #default="{ data }">
@@ -23,16 +23,16 @@
 <script setup lang="ts" name="SearchFormItem">
   import { computed, inject, ref } from "vue";
   import { handleProp } from "@/utils";
-  import { ColumnProps } from "@/components/ProTable/interface";
+  import { IColumnProps } from "@/components/ProTable/interface";
 
-  interface SearchFormItem {
-    column: ColumnProps;
-    searchParam: { [key: string]: any };
+  interface ISearchFormItem {
+    column: IColumnProps;
+    searchParameters: { [key: string]: any };
   }
-  const props = defineProps<SearchFormItem>();
+  const props = defineProps<ISearchFormItem>();
 
   // Re receive SearchParam
-  const _searchParam = computed(() => props.searchParam);
+  const _searchParameters = computed(() => props.searchParameters);
 
   // 判断 fieldNames 设置 label && value && children 的 key 值
   const fieldNames = computed(() => {

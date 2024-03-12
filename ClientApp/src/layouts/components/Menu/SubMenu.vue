@@ -1,6 +1,6 @@
 <template>
   <template v-for="subItem in menuList" :key="subItem.path">
-    <el-menu-item v-if="subItem.meta?.isPage" :index="subItem.path" @click="handleClickMenu(subItem)">
+    <el-menu-item v-if="subItem.meta.routeType > 1" :index="subItem.path" @click="handleClickMenu(subItem)">
       <el-icon v-if="subItem.meta.icon">
         <component :is="subItem.meta.icon"></component>
       </el-icon>
