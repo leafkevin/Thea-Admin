@@ -48,3 +48,31 @@ declare const __APP_INFO__: {
   };
   lastBuildTime: string;
 };
+
+declare interface IPagingState {
+  pageIndex: number;
+  pageSize: number;
+  total: number;
+}
+declare interface ITableState {
+  tableData: any[];
+  pagination: IPagingState;
+  searchParameters: {
+    [key: string]: any;
+  };
+  searchInitParameters: {
+    [key: string]: any;
+  };
+  totalParameters: {
+    [key: string]: any;
+  };
+  icon?: {
+    [key: string]: any;
+  };
+}
+declare interface IPagingData {
+  totalCount: number;
+  pageIndex: number;
+  pageSize: number;
+  data: any[];
+}

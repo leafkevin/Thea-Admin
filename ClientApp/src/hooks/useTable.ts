@@ -1,5 +1,4 @@
 import { ElNotification } from "element-plus";
-import { IPagingData, IPagingState, ITableState } from "./interface";
 import { reactive, computed, toRefs } from "vue";
 
 /**
@@ -22,9 +21,9 @@ export const useTable = (
     // 分页数据
     pagination: {
       // 当前页数
-      pageNumber: 1,
+      pageIndex: 1,
       // 每页显示条数
-      pageSize: 10,
+      pageSize: 15,
       // 总条数
       total: 0
     },
@@ -42,7 +41,7 @@ export const useTable = (
   const pagingParameters = computed({
     get: () => {
       return {
-        pageNum: state.pagination.pageNumber,
+        pageIndex: state.pagination.pageIndex,
         pageSize: state.pagination.pageSize
       };
     },
@@ -73,8 +72,8 @@ export const useTable = (
         // 解构后台返回的分页数据 (如果有分页更新分页信息)
         const pagingData = response.data as IPagingData;
         state.tableData = pagingData.data;
-        updatePaging({ pageNumber: pagingData.pageIndex + 1, pageSize: pagingData.pageSize, total: pagingData.totalCount });
-      } else state.tableData = response.data;
+        updatePaging({ pageIndex: pagingData.pageIndex + 1, pageSize: state.pagination.pageSize, total: pagingData.totalCount });
+      } else state.tableData = response.data as any[];
     } catch (error) {
       requestError && requestError(error);
     }
@@ -112,7 +111,7 @@ export const useTable = (
    * @return void
    * */
   const search = () => {
-    state.pagination.pageNumber = 1;
+    state.pagination.pageIndex = 1;
     updatedTotalParameters();
     getTableList();
   };
@@ -122,7 +121,7 @@ export const useTable = (
    * @return void
    * */
   const reset = () => {
-    state.pagination.pageNumber = 1;
+    state.pagination.pageIndex = 1;
     // 重置搜索表单的时，如果有默认搜索参数，则重置默认的搜索参数
     state.searchParameters = { ...state.searchInitParameters };
     updatedTotalParameters();
@@ -135,7 +134,7 @@ export const useTable = (
    * @return void
    * */
   const handleSizeChange = (val: number) => {
-    state.pagination.pageNumber = 1;
+    state.pagination.pageIndex = 1;
     state.pagination.pageSize = val;
     getTableList();
   };
@@ -146,7 +145,7 @@ export const useTable = (
    * @return void
    * */
   const handleCurrentChange = (val: number) => {
-    state.pagination.pageNumber = val;
+    state.pagination.pageIndex = val;
     getTableList();
   };
 

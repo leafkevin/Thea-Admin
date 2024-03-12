@@ -187,8 +187,8 @@
     if (!props.data) return tableData.value;
     if (!props.isPaging) return props.data;
     return props.data.slice(
-      (pagination.value.pageNumber - 1) * pagination.value.pageSize,
-      pagination.value.pageSize * pagination.value.pageNumber
+      (pagination.value.pageIndex - 1) * pagination.value.pageSize,
+      pagination.value.pageSize * pagination.value.pageIndex
     );
   });
 
