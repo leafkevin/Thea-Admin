@@ -11,7 +11,7 @@
  Target Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 11/03/2024 20:47:21
+ Date: 12/03/2024 10:16:22
 */
 
 SET NAMES utf8mb4;
@@ -151,7 +151,7 @@ CREATE TABLE `sys_menu`  (
   `RedirectUrl` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '重定向URL',
   `Description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
   `ParentId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上级菜单ID',
-  `MenuType` tinyint(4) NULL DEFAULT NULL COMMENT '菜单类型',
+  `RouteType` tinyint(4) NULL DEFAULT NULL COMMENT '路由类型',
   `Icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
   `IsStatic` tinyint(1) NULL DEFAULT 0 COMMENT '是否静态路由',
   `Sequence` int(11) NULL DEFAULT NULL COMMENT '序号',
@@ -166,20 +166,20 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES ('1', '管理员角色根菜单', 'AdminRoot', NULL, NULL, NULL, NULL, 1, NULL, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('11', '首页', 'Home', '/home', '/home/index', NULL, NULL, 3, 'HomeFilled', 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('12', '系统管理', 'SystemMgt', '/systemMgt', '/user/index', NULL, '1', 2, 'Avatar', 0, 9, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('121', '用户管理', 'UserList', '/user', NULL, NULL, '12', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('122', '角色管理', 'RoleList', '/role', NULL, '管理角色', '12', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('123', '菜单管理', 'MenuList', '/menu', NULL, NULL, '12', 3, 'UserFilled', 0, 3, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('124', '授权管理', 'AuthList', '/auth', NULL, '给用户分配角色，并分配操作菜单', '12', 3, 'UserFilled', 0, 4, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('13', '会员管理', 'MemberMgt', '/memberMgt', '/member/index', NULL, '1', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('131', '会员列表', 'MemberList', '/member', NULL, NULL, '13', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('132', '充值管理', 'DepositList', '/deposit', NULL, NULL, '13', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('2', '店员角色根菜单', 'EmpRoot', NULL, NULL, NULL, NULL, 1, NULL, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('21', '会员管理', 'memberMgt', '/memberMgt', '/member/index', NULL, '2', 2, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('211', '会员列表', 'memberList', '/member', NULL, NULL, '22', 3, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_menu` VALUES ('212', '充值管理', 'depositList', '/deposit', NULL, NULL, '22', 3, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('1', '管理员角色根菜单', 'AdminRoot', '', '', '', '', 0, '', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('11', '首页', 'Home', '/home', '/home/index', '', '', 2, 'HomeFilled', 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('12', '系统管理', 'SystemMgt', '/systemMgt', '/user/index', '', '1', 1, 'Avatar', 0, 9, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('121', '用户管理', 'UserList', '/user', '', '', '12', 2, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('122', '角色管理', 'RoleList', '/role', '', '管理角色', '12', 2, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('123', '菜单管理', 'MenuList', '/menu', '', '', '12', 2, 'UserFilled', 0, 3, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('124', '授权管理', 'AuthList', '/auth', '', '给用户分配角色，并分配操作菜单', '12', 2, 'UserFilled', 0, 4, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('13', '会员管理', 'MemberMgt', '/memberMgt', '/member/index', '', '1', 1, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('131', '会员列表', 'MemberList', '/member', '', '', '13', 2, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('132', '充值管理', 'DepositList', '/deposit', '', '', '13', 2, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('2', '店员角色根菜单', 'EmpRoot', '', '', '', '', 0, '', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('21', '会员管理', 'memberMgt', '/memberMgt', '/member/index', '', '2', 1, 'Avatar', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('211', '会员列表', 'memberList', '/member', '', '', '22', 2, 'UserFilled', 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_menu` VALUES ('212', '充值管理', 'depositList', '/deposit', '', '', '22', 2, 'UserFilled', 0, 2, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 
 -- ----------------------------
 -- Table structure for sys_menu_page
