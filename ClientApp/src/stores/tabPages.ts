@@ -20,7 +20,7 @@ export const useTabPageStore = defineStore(
       }
       // add keepalive
       if (!keepAliveStore.keepAliveNames.includes(tabItem.name) && tabItem.isKeepAlive) {
-        keepAliveStore.addKeepAliveName(tabItem.path);
+        keepAliveStore.addKeepAliveName(tabItem.name);
       }
     }
     // Remove Tabs
@@ -35,7 +35,7 @@ export const useTabPageStore = defineStore(
       }
       // remove keepalive
       const tabItem = tabPages.value.find(item => item.path === tabPath);
-      tabItem?.isKeepAlive && keepAliveStore.removeKeepAliveName(tabItem.path);
+      tabItem?.isKeepAlive && keepAliveStore.removeKeepAliveName(tabItem.name);
       // set tabs
       tabPages.value = tabPages.value.filter(item => item.path !== tabPath);
     }
@@ -50,7 +50,7 @@ export const useTabPageStore = defineStore(
       }
       // set keepalive
       const KeepAliveList = tabPages.value.filter(item => item.isKeepAlive);
-      keepAliveStore.setKeepAliveNames(KeepAliveList.map(item => item.path));
+      keepAliveStore.setKeepAliveNames(KeepAliveList.map(item => item.name));
     }
     // Close MultipleTab
     function closeTabPages(tabsMenuValue?: string) {
@@ -59,7 +59,7 @@ export const useTabPageStore = defineStore(
       });
       // set keepalive
       const KeepAliveList = tabPages.value.filter(item => item.isKeepAlive);
-      keepAliveStore.setKeepAliveNames(KeepAliveList.map(item => item.path));
+      keepAliveStore.setKeepAliveNames(KeepAliveList.map(item => item.name));
     }
     // Set Tabs
     function setTabPages(myTabPages: ITabPageState[]) {

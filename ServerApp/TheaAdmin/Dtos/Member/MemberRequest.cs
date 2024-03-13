@@ -1,5 +1,4 @@
 ﻿using TheaAdmin.Domain;
-using System;
 
 namespace TheaAdmin.Dtos;
 
@@ -11,5 +10,4 @@ public class MemberRequest
     public string Description { get; set; }
     public Gender Gender { get; set; }
     public double Balance { get; set; }
-    public DateTime ExpiryDate { get; set; }
 }

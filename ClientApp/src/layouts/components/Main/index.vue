@@ -4,7 +4,7 @@
   <el-main>
     <router-view v-slot="{ Component, route }">
       <transition appear name="fade-transform" mode="out-in">
-        <keep-alive :include="keepAliveName">
+        <keep-alive :include="keepAliveNames">
           <component :is="Component" v-if="isRouterShow" :key="route.fullPath" />
         </keep-alive>
       </transition>
@@ -29,7 +29,7 @@
   const { maximize, isCollapse, layout, tabs, footer } = storeToRefs(globalStore);
 
   const keepAliveStore = useKeepAliveStore();
-  const { keepAliveNames: keepAliveName } = storeToRefs(keepAliveStore);
+  const { keepAliveNames } = storeToRefs(keepAliveStore);
 
   // 注入刷新页面方法
   const isRouterShow = ref(true);

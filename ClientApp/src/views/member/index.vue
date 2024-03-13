@@ -43,13 +43,14 @@
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
   import { useHandleData } from "@/hooks/useHandleData";
-  import { IMemberSate, queryPage, deleteMember as deleteMemberApi, batchDeleteMembers, exportMembers } from "@/api/member";
+  import { IMemberState, queryPage, deleteMember as deleteMemberApi, batchDeleteMembers, exportMembers } from "@/api/member";
   import { ElMessageBox } from "element-plus";
   import { useDownload } from "@/hooks/useDownload";
 
   defineOptions({
     name: "MemberList"
   });
+
   const router = useRouter();
   const tableRef = ref<ProTableInstance>();
   // 表格配置项
@@ -64,7 +65,7 @@
   ];
 
   // 删除会员信息
-  const deleteMember = async (params: IMemberSate) => {
+  const deleteMember = async (params: IMemberState) => {
     await useHandleData(deleteMemberApi, { id: [params.memberId] }, `删除【${params.memberName}】用户`);
     tableRef.value?.getTableList();
   };

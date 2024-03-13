@@ -1,6 +1,6 @@
 import { http } from "./http";
 
-export interface IMemberSate {
+export interface IMemberState {
   memberId?: string;
   memberName: string;
   mobile: string;
