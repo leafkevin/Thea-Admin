@@ -3,7 +3,7 @@
     <el-form ref="formRef" :model="ruleForm" :rules="rules" label-width="140px">
       <el-form-item label="会员名称" prop="memberName">
         <el-input v-model="ruleForm.memberName" placeholder="请输入会员名称，必填" clearable />
-        <!-- <el-input :type="'hidden'" v-model="ruleForm.memberId" /> -->
+        <el-input v-model="memberId" type="text" />
       </el-form-item>
       <el-form-item label="会员手机号" prop="mobile">
         <el-input v-model="ruleForm.mobile" placeholder="请输入会员手机号码，必填" clearable />
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
   import { reactive, ref } from "vue";
-  import { useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import { checkPhoneNumber } from "@/utils/eleValidate";
   import type { FormInstance, FormRules } from "element-plus";
   import { ElNotification } from "element-plus";
@@ -45,8 +45,10 @@
   });
 
   const formRef = ref<FormInstance>();
+  const currentRoute = useRoute();
+  const memberId = ref(currentRoute.params.id as string);
   const ruleForm = reactive({
-    memberId: "",
+    memberId: (currentRoute.params.id as string) ?? "",
     memberName: "",
     mobile: "",
     gender: 0,

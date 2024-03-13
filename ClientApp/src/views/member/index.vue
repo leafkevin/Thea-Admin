@@ -20,8 +20,8 @@
       </template>
       <template #gender="scope">
         <el-tag type="info" v-if="scope.row.gender == 0">未知</el-tag>
-        <el-tag type="danger" v-else-if="scope.row.gender == 2">女性</el-tag>
-        <el-tag type="" v-else>男性</el-tag>
+        <el-tag type="primary" v-else-if="scope.row.gender == 1">男性</el-tag>
+        <el-tag type="danger" v-else>女性</el-tag>
       </template>
 
       <template #balance="scope">
