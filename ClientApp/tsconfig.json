@@ -4,7 +4,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Node",
-    "types": ["node", "vite/client"],
+    "types": ["node", "vite/client", "element-plus/global"],
 
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
@@ -28,7 +28,7 @@
       "@": ["src"],
       "@/*": ["src/*"],
       "@build/*": ["build/*"]
-    },   
+    },
     "typeRoots": ["node_modules/@types"]
   },
   "include": [

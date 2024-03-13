@@ -11,6 +11,9 @@ export interface IMemberState {
 export const queryPage = (parameters: object) => {
   return http.post("/member/queryPage", parameters);
 };
+export const getMember = (parameters: object) => {
+  return http.post("/member/detail", parameters);
+};
 export const createMember = (parameters: object) => {
   return http.post("/member/create", parameters);
 };

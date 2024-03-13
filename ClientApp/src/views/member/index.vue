@@ -11,7 +11,7 @@
       highlight-current-row>
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
-        <el-button type="primary" :icon="CirclePlus" @click="router.push({ name: 'MemberEdit' })">新增会员</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="createMember">新增会员</el-button>
         <el-button type="primary" :icon="Upload" plain @click="batchAdd">批量添加</el-button>
         <el-button type="primary" :icon="Download" plain @click="downloadFile">导出</el-button>
         <el-button type="danger" :icon="Delete" plain :disabled="!scope.isSelected" @click="batchDelete(scope.selectedListIds)">
@@ -28,9 +28,9 @@
         {{ new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY" }).format(scope.row.balance) }}
       </template>
       <!-- 菜单操作 -->
-      <template #operation>
-        <el-button type="primary" link :icon="EditPen"> 编辑 </el-button>
-        <el-button type="primary" link :icon="Delete" @click="deleteMember"> 删除 </el-button>
+      <template #operation="scope">
+        <el-button type="primary" link :icon="EditPen" @click="modifyMember(scope)"> 编辑 </el-button>
+        <el-button type="primary" link :icon="Delete" @click="deleteMember(scope)"> 删除 </el-button>
       </template>
     </ProTable>
   </div>
@@ -63,7 +63,10 @@
     { prop: "balance", label: "余额", align: "right" },
     { prop: "operation", label: "操作", width: 250, fixed: "right" }
   ];
-
+  const createMember = () => {
+    router.push({ name: "MemberEdit", params: { id: "" } });
+  };
+  const modifyMember = scope => router.push({ name: "MemberEdit", params: { id: scope.row.memberId } });
   // 删除会员信息
   const deleteMember = async (params: IMemberState) => {
     await useHandleData(deleteMemberApi, { id: [params.memberId] }, `删除【${params.memberName}】用户`);
