@@ -43,7 +43,7 @@
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
   import { useHandleData } from "@/hooks/useHandleData";
-  import { IMemberState, queryPage, deleteMember as deleteMemberApi, batchDeleteMembers, exportMembers } from "@/api/member";
+  import { queryPage, deleteMember as deleteMemberApi, batchDeleteMembers, exportMembers } from "@/api/member";
   import { ElMessageBox } from "element-plus";
   import { useDownload } from "@/hooks/useDownload";
 
@@ -61,15 +61,17 @@
     { prop: "mobile", label: "手机号码", align: "center", search: { el: "input", props: { placeholder: "请输入手机号码" } } },
     { prop: "gender", label: "性别", align: "center" },
     { prop: "balance", label: "余额", align: "right" },
-    { prop: "operation", label: "操作", width: 250, fixed: "right" }
+    { prop: "description", label: "描述", align: "left", minWidth: 150 },
+    { prop: "createdAt", label: "注册时间" },
+    { prop: "operation", label: "操作", minWidth: 150, fixed: "right" }
   ];
   const createMember = () => {
-    router.push({ name: "MemberEdit", params: { id: "" } });
+    router.push({ name: "MemberEdit", state: { id: "" } });
   };
-  const modifyMember = scope => router.push({ name: "MemberEdit", params: { id: scope.row.memberId } });
+  const modifyMember = scope => router.push({ name: "MemberEdit", state: { id: scope.row.memberId } });
   // 删除会员信息
-  const deleteMember = async (params: IMemberState) => {
-    await useHandleData(deleteMemberApi, { id: [params.memberId] }, `删除【${params.memberName}】用户`);
+  const deleteMember = async scope => {
+    await useHandleData(deleteMemberApi, { id: scope.row.memberId }, `删除【${scope.row.memberName}】用户`);
     tableRef.value?.getTableList();
   };
   // 批量删除用户信息

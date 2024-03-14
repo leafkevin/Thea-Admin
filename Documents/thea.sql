@@ -11,7 +11,7 @@
  Target Server Version : 110202 (11.2.2-MariaDB-1:11.2.2+maria~ubu2204)
  File Encoding         : 65001
 
- Date: 12/03/2024 10:16:22
+ Date: 14/03/2024 09:58:00
 */
 
 SET NAMES utf8mb4;
@@ -84,10 +84,13 @@ CREATE TABLE `mos_member`  (
 -- ----------------------------
 -- Records of mos_member
 -- ----------------------------
-INSERT INTO `mos_member` VALUES ('65dd407f8d0be6d9a48932e1', 'kevin', '18516063052', '1111', 1, 1240.00, 1, '1', '2024-02-24 07:33:25', '1', '2024-03-02 15:51:34');
-INSERT INTO `mos_member` VALUES ('65dd407f8d0be6d9a48932e2', 'cindy', '18516063025', '2222', 2, 300.00, 1, '1', '2024-02-24 07:34:16', '1', '2024-02-27 09:48:55');
-INSERT INTO `mos_member` VALUES ('65dd407f8d0be6d9a48932f0', 'xiyuan', '18516521234', '234234', 1, 2000.00, 1, '1', '2024-02-27 09:53:03', '1', '2024-03-02 15:54:50');
+INSERT INTO `mos_member` VALUES ('65dd407f8d0be6d9a48932e1', 'kevin', '18516063052', '888', 1, 4444.00, 2, '1', '2024-02-24 07:33:25', '1', '2024-03-14 08:30:59');
+INSERT INTO `mos_member` VALUES ('65dd407f8d0be6d9a48932e2', 'cindy', '18516063025', '2222', 2, 300.00, 2, '1', '2024-02-24 07:34:16', '1', '2024-03-14 08:30:57');
+INSERT INTO `mos_member` VALUES ('65dd407f8d0be6d9a48932f0', 'xiyuan', '18516521234', '234234', 1, 2000.00, 2, '1', '2024-02-27 09:53:03', '1', '2024-03-14 08:30:50');
 INSERT INTO `mos_member` VALUES ('65e2dbaea71eb0f22e2fc588', '安刚', '18516063052', '描述信息', 1, 200.00, 1, '1', '2024-03-02 15:56:30', '1', '2024-03-02 15:56:30');
+INSERT INTO `mos_member` VALUES ('65f23a042c5b27887029d1bc', 'kevin', '18516063052', '1111', 1, 1240.00, 1, '1', '2024-03-14 07:43:00', '1', '2024-03-14 08:31:15');
+INSERT INTO `mos_member` VALUES ('65f23ab92c5b27887029d1bd', 'cindy', '18516063025', '2222', 2, 300.00, 1, '1', '2024-03-14 07:46:01', '1', '2024-03-14 07:46:01');
+INSERT INTO `mos_member` VALUES ('65f23bdd2c5b27887029d1be', 'xiyuan', '18516521234', '234234', 2, 2000.00, 1, '1', '2024-03-14 07:50:53', '1', '2024-03-14 08:31:30');
 
 -- ----------------------------
 -- Table structure for mos_order
@@ -283,18 +286,18 @@ CREATE TABLE `sys_route`  (
 -- ----------------------------
 -- Records of sys_route
 -- ----------------------------
-INSERT INTO `sys_route` VALUES ('1', 'Home', '首页', '/home/index', '/home/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 1, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('1', 'Home', '首页', '/home/index', '/home/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 1, 0, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('11', 'UserList', '用户列表', '/user/index', '/user/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('12', 'UserEdit', '用户编辑', '/user/edit', '/user/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('13', 'RoleList', '角色列表', '/role/index', '/role/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('14', 'RoleEdit', '角色编辑', '/role/edit', '/role/edit', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('15', 'MenuList', '菜单列表', '/menu/index', '/menu/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('16', 'MenurEdit', '菜单编辑', '/menu/edit', '/menu/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('16', 'MenuEdit', '菜单编辑', '/menu/edit', '/menu/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('17', 'AuthList', '授权列表', '/auth/index', '/auth/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('18', 'AuthEdit', '用户授权', '/auth/form', '/auth/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('2', 'Login', '登录', '/login/index', '/login/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('2', 'Login', '登录', '/login/index', '/login/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 0, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('3', 'SwitchRole', '切换角色', '/switchRole/index', '/switchRole/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
-INSERT INTO `sys_route` VALUES ('31', 'MemberList', '会员列表', '/member/index', '/member/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
+INSERT INTO `sys_route` VALUES ('31', 'MemberList', '会员列表', '/member/index', '/member/index', NULL, NULL, 'UserFilled', 0, 0, 0, 0, 0, 0, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('32', 'MemberEdit', '会员编辑', '/member/edit', '/member/form', NULL, NULL, 'UserFilled', 0, 1, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('4', 'Profile', '个人信息', '/profile/index', '/profile/index', NULL, NULL, 'UserFilled', 1, 0, 0, 0, 0, 1, 0, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');
 INSERT INTO `sys_route` VALUES ('41', 'DepositList', '充值列表', '/deposit/index', '/deposit/index', NULL, NULL, 'CreditCard', 0, 0, 0, 0, 0, 1, 1, '1', '2024-03-03 01:06:40', '1', '2024-03-03 01:06:40');

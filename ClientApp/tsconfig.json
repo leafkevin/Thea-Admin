@@ -4,7 +4,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Node",
-    "types": ["node", "vite/client", "element-plus/global", "element-plus/global.d.ts"],
+    "types": ["node", "vite/client"],
 
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
@@ -38,7 +38,8 @@
     "src/**/*.vue",
     "build/**/*.ts",
     "build/**/*.d.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "./auto-imports.d.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }

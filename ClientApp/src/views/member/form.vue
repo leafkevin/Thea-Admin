@@ -1,9 +1,9 @@
 <template>
-  <div class="card content-box">
+  <div v-if="loading" class="loading">Loading...</div>
+  <div v-else class="card content-box">
     <el-form ref="formRef" :model="ruleForm" :rules="rules" label-width="140px">
       <el-form-item label="会员名称" prop="memberName">
         <el-input v-model="ruleForm.memberName" placeholder="请输入会员名称，必填" clearable />
-        <el-input v-model="memberId" type="text" />
       </el-form-item>
       <el-form-item label="会员手机号" prop="mobile">
         <el-input v-model="ruleForm.mobile" placeholder="请输入会员手机号码，必填" clearable />
@@ -14,7 +14,6 @@
           <el-radio-button label="男性" :value="1" />
           <el-radio-button label="女性" :value="2" />
         </el-radio-group>
-        <el-input v-model="ruleForm.gender" />
       </el-form-item>
       <el-form-item label="余额" prop="balance">
         <template #prepend>¥</template>
@@ -25,37 +24,70 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)"> 保存 </el-button>
-        <el-button @click="resetForm(formRef)"> 重置 </el-button>
+        <el-button @click="goBack"> 返回 </el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from "vue";
+  import { reactive, ref, onActivated } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import { checkPhoneNumber } from "@/utils/eleValidate";
   import type { FormInstance, FormRules } from "element-plus";
   import { ElNotification } from "element-plus";
-  import { createMember } from "@/api/member";
+  import { IMemberState, createMember, getMember, modifyMember } from "@/api/member";
   import { useTabPageStore } from "@/stores/tabPages";
 
   defineOptions({
     name: "MemberEdit"
   });
 
+  const loading = ref(false);
   const formRef = ref<FormInstance>();
   const currentRoute = useRoute();
-  const memberId = ref(currentRoute.params.id as string);
+  const router = useRouter();
+  const tabPageStore = useTabPageStore();
+  const memberId = history.state.id as string;
+
   const ruleForm = reactive({
-    memberId: (currentRoute.params.id as string) ?? "",
+    memberId: memberId,
     memberName: "",
     mobile: "",
     gender: 0,
     balance: 0.0,
     description: ""
   });
-
+  onActivated(async () => {
+    if (memberId && memberId.length > 0) {
+      loading.value = true;
+      const response = await getMember(memberId);
+      if (!response.isSuccess) {
+        loading.value = false;
+        ElNotification({
+          title: "获取会员信息失败",
+          message: `${response.message}，code:${response.code}`,
+          type: "error"
+        });
+        return;
+      }
+      const memberState = response.data as IMemberState;
+      ruleForm.memberId = memberState.memberId as string;
+      ruleForm.memberName = memberState.memberName;
+      ruleForm.mobile = memberState.mobile;
+      ruleForm.gender = memberState.gender;
+      ruleForm.balance = memberState.balance;
+      ruleForm.description = memberState.description;
+    } else {
+      ruleForm.memberId = "";
+      ruleForm.memberName = "";
+      ruleForm.mobile = "";
+      ruleForm.gender = 0;
+      ruleForm.balance = 0.0;
+      ruleForm.description = "";
+    }
+    loading.value = false;
+  });
   const rules = reactive<FormRules>({
     memberName: [{ required: true, message: "请输入会员名称", trigger: "blur" }],
     mobile: [{ required: true, validator: checkPhoneNumber, trigger: "blur" }],
@@ -66,7 +98,9 @@
     if (!formEl) return;
     await formEl.validate(async (valid, fields) => {
       if (valid) {
-        const response = await createMember(ruleForm);
+        let response;
+        if (memberId && memberId.length > 0) response = await modifyMember(ruleForm);
+        else response = await createMember(ruleForm);
         if (!response.isSuccess) {
           ElNotification({
             title: "操作失败",
@@ -74,9 +108,7 @@
             type: "error"
           });
         }
-        const router = useRouter();
-        const tabPageStore = useTabPageStore();
-        tabPageStore.removeTabPage(router.currentRoute.value.fullPath);
+        tabPageStore.removeTabPage(currentRoute.fullPath);
         router.push({ name: "MemberList", replace: true });
         ElNotification({
           title: "操作成功",
@@ -89,10 +121,9 @@
       }
     });
   };
-
-  const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return;
-    formEl.resetFields();
+  const goBack = () => {
+    tabPageStore.removeTabPage(currentRoute.fullPath);
+    router.push({ name: "MemberList" });
   };
 </script>
 <style scoped lang="scss">

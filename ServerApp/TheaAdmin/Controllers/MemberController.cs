@@ -43,6 +43,27 @@ public class MemberController : ControllerBase
             .ToPageListAsync();
         return TheaResponse.Succeed(result);
     }
+    [HttpGet]
+    public async Task<TheaResponse> Detail([FromQuery] string id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return TheaResponse.Fail(1, $"会员ID不能为空");
+
+        using var repository = this.dbFactory.Create();
+        var result = await repository.From<Member>()
+            .Where(f => f.MemberId == id)
+            .Select(f => new
+            {
+                f.MemberId,
+                f.MemberName,
+                f.Mobile,
+                f.Gender,
+                f.Balance,
+                f.Description
+            })
+            .FirstAsync();
+        return TheaResponse.Succeed(result);
+    }
     [HttpPost]
     public async Task<TheaResponse> Create([FromBody] MemberRequest request)
     {
@@ -169,7 +190,7 @@ public class MemberController : ControllerBase
         var result = await repository.From<Member>()
             .Where(f => f.Status == DataStatus.Active)
             .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
-            .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile)) 
+            .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile))
             .Select(f => new
             {
                 f.MemberId,
@@ -180,7 +201,7 @@ public class MemberController : ControllerBase
                 f.Description,
                 f.CreatedAt
             })
-            .ToListAsync(); 
+            .ToListAsync();
         return TheaResponse.Succeed(result);
     }
 }

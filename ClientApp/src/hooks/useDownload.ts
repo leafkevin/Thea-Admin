@@ -25,19 +25,22 @@ export const useDownload = async (
   }
   try {
     const res = await api(params);
-    const blob = new Blob([res]);
+    const blobType = "application/force-download";
+    const blob = new Blob([res], { type: blobType });
     // 兼容 edge 不支持 createObjectURL 方法
     if ("msSaveOrOpenBlob" in navigator) return window.navigator.msSaveOrOpenBlob(blob, tempName + fileType);
     const blobUrl = window.URL.createObjectURL(blob);
-    const exportFile = document.createElement("a");
-    exportFile.style.display = "none";
-    exportFile.download = `${tempName}${fileType}`;
-    exportFile.href = blobUrl;
-    document.body.appendChild(exportFile);
-    exportFile.click();
+    const fileArchor = document.createElement("a");
+    fileArchor.setAttribute("href", blobUrl);
+    fileArchor.setAttribute("download", `${tempName}${fileType}`);
+    // fileArchor.style.display = "none";
+    // fileArchor.download = `${tempName}${fileType}`;
+    // fileArchor.href = blobUrl;
+    // document.body.appendChild(fileArchor);
+    fileArchor.click();
     // 去除下载对 url 的影响
-    document.body.removeChild(exportFile);
-    window.URL.revokeObjectURL(blobUrl);
+    // document.body.removeChild(fileArchor);
+    // window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.log(error);
   }
