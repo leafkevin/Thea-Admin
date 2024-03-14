@@ -27,5 +27,5 @@ export const batchDeleteMembers = (parameters: object) => {
   return http.get("/member/batchDelete", parameters);
 };
 export const exportMembers = (parameters: object) => {
-  return http.get("/member/export", parameters);
+  return http.download("/member/export", parameters);
 };

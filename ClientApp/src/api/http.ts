@@ -69,6 +69,9 @@ class RequestHttp {
       (response: AxiosResponse) => {
         const { status, data } = response;
         tryHideFullScreenLoading();
+        //下载内容，直接放过，不做任何处理
+        if (data.type && data.type === "application/vnd.ms-excel") return data;
+
         const theaResponse = data as IResponse;
         // 登录失效
         if (status == 401) {

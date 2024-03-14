@@ -1,9 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
+ï»¿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Thea;
+using Thea.ExcelExporter;
 using TheaAdmin.Domain;
 using TheaAdmin.Domain.Models;
 using TheaAdmin.Dtos;
@@ -47,7 +49,7 @@ public class MemberController : ControllerBase
     public async Task<TheaResponse> Detail([FromQuery] string id)
     {
         if (string.IsNullOrEmpty(id))
-            return TheaResponse.Fail(1, $"»áÔ±ID²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"ä¼šå‘˜IDä¸èƒ½ä¸ºç©º");
 
         using var repository = this.dbFactory.Create();
         var result = await repository.From<Member>()
@@ -68,9 +70,9 @@ public class MemberController : ControllerBase
     public async Task<TheaResponse> Create([FromBody] MemberRequest request)
     {
         if (string.IsNullOrEmpty(request.MemberName))
-            return TheaResponse.Fail(1, $"»áÔ±ĞÕÃû²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"ä¼šå‘˜å§“åä¸èƒ½ä¸ºç©º");
         if (string.IsNullOrEmpty(request.Mobile))
-            return TheaResponse.Fail(1, $"ÊÖ»úºÅÂë²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"æ‰‹æœºå·ç ä¸èƒ½ä¸ºç©º");
 
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
@@ -78,11 +80,11 @@ public class MemberController : ControllerBase
         var result = await repository.CreateAsync<Member>(new
         {
             MemberId = ObjectId.NewId(),
-            MemberName = request.MemberName,
-            Mobile = request.Mobile,
-            Gender = request.Gender,
-            Description = request.Description,
-            Balance = request.Balance,
+            request.MemberName,
+            request.Mobile,
+            request.Gender,
+            request.Description,
+            request.Balance,
             Status = 1,
             CreatedAt = DateTime.Now,
             CreatedBy = operatorId,
@@ -90,42 +92,42 @@ public class MemberController : ControllerBase
             UpdatedBy = operatorId
         });
         if (result <= 0)
-            return TheaResponse.Fail(2, $"²Ù×÷Ê§°Ü£¬ÇëÖØÊÔ");
+            return TheaResponse.Fail(2, $"æ“ä½œå¤±è´¥ï¼Œè¯·é‡è¯•");
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
     public async Task<TheaResponse> Modify([FromBody] MemberRequest request)
     {
         if (string.IsNullOrEmpty(request.MemberId))
-            return TheaResponse.Fail(1, $"»áÔ±ID²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"ä¼šå‘˜IDä¸èƒ½ä¸ºç©º");
         if (string.IsNullOrEmpty(request.MemberName))
-            return TheaResponse.Fail(1, $"»áÔ±ĞÕÃû²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"ä¼šå‘˜å§“åä¸èƒ½ä¸ºç©º");
         if (string.IsNullOrEmpty(request.Mobile))
-            return TheaResponse.Fail(1, $"ÊÖ»úºÅÂë²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"æ‰‹æœºå·ç ä¸èƒ½ä¸ºç©º");
 
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
         var operatorId = passport.UserId;
         var result = await repository.UpdateAsync<Member>(new
         {
-            MemberId = request.MemberId,
-            MemberName = request.MemberName,
-            Mobile = request.Mobile,
-            Gender = request.Gender,
-            Description = request.Description,
-            Balance = request.Balance,
+            request.MemberId,
+            request.MemberName,
+            request.Mobile,
+            request.Gender,
+            request.Description,
+            request.Balance,
             UpdatedAt = DateTime.Now,
             UpdatedBy = operatorId
         });
         if (result <= 0)
-            return TheaResponse.Fail(2, $"²Ù×÷Ê§°Ü£¬ÇëÖØÊÔ");
+            return TheaResponse.Fail(2, $"æ“ä½œå¤±è´¥ï¼Œè¯·é‡è¯•");
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
     public async Task<TheaResponse> Delete([FromBody] IdRequest request)
     {
         if (string.IsNullOrEmpty(request.Id))
-            return TheaResponse.Fail(1, $"»áÔ±ID²»ÄÜÎª¿Õ");
+            return TheaResponse.Fail(1, $"ä¼šå‘˜IDä¸èƒ½ä¸ºç©º");
 
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
@@ -138,14 +140,14 @@ public class MemberController : ControllerBase
             UpdatedBy = operatorId
         });
         if (result <= 0)
-            return TheaResponse.Fail(2, $"²Ù×÷Ê§°Ü£¬ÇëÖØÊÔ");
+            return TheaResponse.Fail(2, $"æ“ä½œå¤±è´¥ï¼Œè¯·é‡è¯•");
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
     public async Task<TheaResponse> BatchDelete([FromBody] IdsRequest request)
     {
         if (request.Ids == null || request.Ids.Count == 0)
-            return TheaResponse.Fail(1, $"ÖÁÉÙÒªÑ¡ÔñÒ»¸ö»áÔ±£¬²ÅÄÜÅúÁ¿É¾³ı");
+            return TheaResponse.Fail(1, $"è‡³å°‘è¦é€‰æ‹©ä¸€ä¸ªä¼šå‘˜ï¼Œæ‰èƒ½æ‰¹é‡åˆ é™¤");
 
         var passport = this.User.ToPassport();
 
@@ -159,7 +161,7 @@ public class MemberController : ControllerBase
         });
         var result = await repository.UpdateAsync<Member>(entities);
         if (result <= 0)
-            return TheaResponse.Fail(2, $"²Ù×÷Ê§°Ü£¬ÇëÖØÊÔ");
+            return TheaResponse.Fail(2, $"æ“ä½œå¤±è´¥ï¼Œè¯·é‡è¯•");
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
@@ -184,7 +186,7 @@ public class MemberController : ControllerBase
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
-    public async Task<TheaResponse> Export([FromBody] MemberQueryRequest request)
+    public async Task<FileStreamResult> Export([FromBody] MemberQueryRequest request)
     {
         using var repository = this.dbFactory.Create();
         var result = await repository.From<Member>()
@@ -202,6 +204,25 @@ public class MemberController : ControllerBase
                 f.CreatedAt
             })
             .ToListAsync();
-        return TheaResponse.Succeed(result);
+
+        var genderDecorator = (object data) =>
+           (Gender)data switch
+           {
+               Gender.Male => "ç”·",
+               Gender.Female => "å¥³",
+               _ => "æœªçŸ¥"
+           };
+        var stream = new MemoryStream();
+        var builder = new ExcelExporterBuilder().WithData(result);
+        await builder.AddColumnHeader(f => f.Field(t => t.MemberId).Title("ä¼šå‘˜ID").Width(26.63))
+            .AddColumnHeader(f => f.Field(t => t.MemberName).Title("ä¼šå‘˜åç§°").Width(12.13))
+            .AddColumnHeader(f => f.Field(t => t.Mobile).Title("æ‰‹æœºå·").Width(12.13))
+            .AddColumnHeader(f => f.Field(t => t.Gender).Title("æ€§åˆ«").Decorator(genderDecorator).Width(4.63).Horizontal(CellHorizontalAlignment.Center))
+            .AddColumnHeader(f => f.Field(t => t.Balance).Title("ä½™é¢").Format("&quot;Â¥&quot;#,##0.00;&quot;Â¥&quot;\\-#,##0.00").Width(9.88))
+            .AddColumnHeader(f => f.Field(t => t.Description).Title("æè¿°"))
+            .AddColumnHeader(f => f.Field(t => t.CreatedAt).Title("æ³¨å†Œæ—¶é—´").Width(21).Format("yyyy-MM-dd HH:mm:ss"))
+            .Export(stream);
+        stream.Position = 0;
+        return this.File(stream, "application/vnd.ms-excel", "export.xlsx");
     }
 }

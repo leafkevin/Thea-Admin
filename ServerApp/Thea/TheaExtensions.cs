@@ -60,4 +60,12 @@ public static class TheaExtensions
         return false;
     }
     public static IPassport ToPassport(this ClaimsPrincipal user) => new Passport(user);
+    public static bool IsNumber(this object value)
+        => value is sbyte || value is byte || value is short || value is ushort || value is int
+        || value is uint || value is long || value is ulong || value is float || value is double || value is decimal;
+    public static string ToCamelCase(this string strValue)
+    {
+        if (string.IsNullOrEmpty(strValue)) return strValue;
+        return strValue.Substring(0, 1).ToLower() + strValue.Substring(1);
+    }
 }

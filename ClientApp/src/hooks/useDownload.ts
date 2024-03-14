@@ -25,22 +25,14 @@ export const useDownload = async (
   }
   try {
     const res = await api(params);
-    const blobType = "application/force-download";
-    const blob = new Blob([res], { type: blobType });
+    const blob = new Blob([res], { type: "application/vnd.ms-excel" });
     // 兼容 edge 不支持 createObjectURL 方法
     if ("msSaveOrOpenBlob" in navigator) return window.navigator.msSaveOrOpenBlob(blob, tempName + fileType);
     const blobUrl = window.URL.createObjectURL(blob);
     const fileArchor = document.createElement("a");
     fileArchor.setAttribute("href", blobUrl);
     fileArchor.setAttribute("download", `${tempName}${fileType}`);
-    // fileArchor.style.display = "none";
-    // fileArchor.download = `${tempName}${fileType}`;
-    // fileArchor.href = blobUrl;
-    // document.body.appendChild(fileArchor);
     fileArchor.click();
-    // 去除下载对 url 的影响
-    // document.body.removeChild(fileArchor);
-    // window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
     console.log(error);
   }

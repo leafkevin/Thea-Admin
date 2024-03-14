@@ -83,7 +83,7 @@
   // 导出用户列表
   const downloadFile = async () => {
     ElMessageBox.confirm("确认导出用户数据?", "温馨提示", { type: "warning" }).then(() =>
-      useDownload(exportMembers, "用户列表", tableRef.value?.searchParameters)
+      useDownload(exportMembers, "会员列表导出", tableRef.value?.searchParameters)
     );
   };
   // 批量添加用户
