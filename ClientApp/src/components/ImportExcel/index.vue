@@ -31,16 +31,15 @@
           </template>
         </el-upload>
       </el-form-item>
-      <el-form-item label="数据覆盖 :">
-        <el-switch v-model="isCover" />
-        <el-text type="danger" :style="{ display: displayStyle }">原有数据将被覆盖，部分数据会丢失，谨慎选择！！</el-text>
+      <el-form-item label="注意 :">
+        <el-text type="warning"> {{ parameter.skipContent }} </el-text>
       </el-form-item>
     </el-form>
   </el-dialog>
 </template>
 
 <script setup lang="ts" name="ImportExcel">
-  import { ref, computed } from "vue";
+  import { ref } from "vue";
   import { useDownload } from "@/hooks/useDownload";
   import { Download } from "@element-plus/icons-vue";
   import { ElNotification, UploadRequestOptions, UploadRawFile } from "element-plus";
@@ -49,23 +48,22 @@
     title: string; // 标题
     fileSize?: number; // 上传文件的大小
     fileType?: File.ExcelMimeType[]; // 上传文件的类型
+    skipContent: string; // 存在数据跳过描述文本
     tempApi?: (params: any) => Promise<any>; // 下载模板的Api
     importApi?: (params: any) => Promise<any>; // 批量导入的Api
     getTableList?: () => void; // 获取表格数据的Api
   }
 
-  // 是否覆盖数据
-  const isCover = ref(false);
   // 最大文件上传数
   const excelLimit = ref(1);
   // dialog状态
   const dialogVisible = ref(false);
-  const displayStyle = computed(isCover.value ? "flex" : "none");
   // 父组件传过来的参数
   const parameter = ref<ExcelParameterProps>({
     title: "",
     fileSize: 5,
-    fileType: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+    fileType: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+    skipContent: "导入过程中，已存在的数据将会跳过，不会导入！"
   });
 
   // 接收父组件参数
@@ -84,7 +82,6 @@
   const uploadExcel = async (param: UploadRequestOptions) => {
     let excelFormData = new FormData();
     excelFormData.append("file", param.file);
-    excelFormData.append("isCover", isCover.value as unknown as Blob);
     await parameter.value.importApi!(excelFormData);
     parameter.value.getTableList && parameter.value.getTableList();
     dialogVisible.value = false;

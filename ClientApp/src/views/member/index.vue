@@ -82,6 +82,7 @@
   const batchImport = () => {
     const params = {
       title: "会员导入模板",
+      skipContent: "存在相同手机号码的会员数据，将被跳过不会导入！",
       tempApi: downloadTemplate,
       importApi: importMembers,
       getTableList: tableRef.value?.getTableList
