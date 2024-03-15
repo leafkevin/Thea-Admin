@@ -1,7 +1,7 @@
 <template>
-  <el-dialog v-model="dialogVisible" :title="`批量添加${parameter.title}`" :destroy-on-close="true" width="580px" draggable>
+  <el-dialog v-model="dialogVisible" title="批量导入" :destroy-on-close="true" width="580px" draggable>
     <el-form class="drawer-multiColumn-form" label-width="100px">
-      <el-form-item label="模板下载 :">
+      <el-form-item label="模板下载 :" class="el-dialog_body-margin_top">
         <el-button type="primary" :icon="Download" @click="downloadTemp"> 点击下载 </el-button>
       </el-form-item>
       <el-form-item label="文件上传 :">
@@ -33,13 +33,14 @@
       </el-form-item>
       <el-form-item label="数据覆盖 :">
         <el-switch v-model="isCover" />
+        <el-text type="danger" :style="{ display: displayStyle }">原有数据将被覆盖，部分数据会丢失，谨慎选择！！</el-text>
       </el-form-item>
     </el-form>
   </el-dialog>
 </template>
 
 <script setup lang="ts" name="ImportExcel">
-  import { ref } from "vue";
+  import { ref, computed } from "vue";
   import { useDownload } from "@/hooks/useDownload";
   import { Download } from "@element-plus/icons-vue";
   import { ElNotification, UploadRequestOptions, UploadRawFile } from "element-plus";
@@ -59,6 +60,7 @@
   const excelLimit = ref(1);
   // dialog状态
   const dialogVisible = ref(false);
+  const displayStyle = computed(isCover.value ? "flex" : "none");
   // 父组件传过来的参数
   const parameter = ref<ExcelParameterProps>({
     title: "",
@@ -75,7 +77,7 @@
   // Excel 导入模板下载
   const downloadTemp = () => {
     if (!parameter.value.tempApi) return;
-    useDownload(parameter.value.tempApi, `${parameter.value.title}模板`);
+    useDownload(parameter.value.tempApi, parameter.value.title, {}, false);
   };
 
   // 文件上传

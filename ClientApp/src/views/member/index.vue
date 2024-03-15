@@ -12,7 +12,7 @@
       <!-- 表格 header 按钮 -->
       <template #tableHeader="scope">
         <el-button type="primary" :icon="CirclePlus" @click="createMember">新增会员</el-button>
-        <el-button type="primary" :icon="Upload" plain @click="batchAdd">批量添加</el-button>
+        <el-button type="primary" :icon="Upload" plain @click="batchImport">批量导入</el-button>
         <el-button type="primary" :icon="Download" plain @click="downloadFile">导出</el-button>
         <el-button type="danger" :icon="Delete" plain :disabled="!scope.isSelected" @click="batchDelete(scope.selectedListIds)">
           批量删除
@@ -30,9 +30,10 @@
       <!-- 菜单操作 -->
       <template #operation="scope">
         <el-button type="primary" link :icon="EditPen" @click="modifyMember(scope)"> 编辑 </el-button>
-        <el-button type="primary" link :icon="Delete" @click="deleteMember(scope)"> 删除 </el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteMember(scope)"> 删除 </el-button>
       </template>
     </ProTable>
+    <ImportExcel ref="dialogRef" />
   </div>
 </template>
 
@@ -43,9 +44,17 @@
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
   import { useHandleData } from "@/hooks/useHandleData";
-  import { queryPage, deleteMember as deleteMemberApi, batchDeleteMembers, exportMembers } from "@/api/member";
+  import {
+    queryPage,
+    importMembers,
+    deleteMember as deleteMemberApi,
+    batchDeleteMembers,
+    exportMembers,
+    downloadTemplate
+  } from "@/api/member";
   import { ElMessageBox } from "element-plus";
   import { useDownload } from "@/hooks/useDownload";
+  import ImportExcel from "@/components/ImportExcel/index.vue";
 
   defineOptions({
     name: "MemberList"
@@ -56,18 +65,30 @@
   // 表格配置项
   const columns: IColumnProps[] = [
     { type: "selection", fixed: "left", width: 70 },
-    { prop: "memberId", label: "会员ID", align: "left" },
     { prop: "memberName", label: "会员名称", align: "center", search: { el: "input", props: { placeholder: "请输入会员名称" } } },
     { prop: "mobile", label: "手机号码", align: "center", search: { el: "input", props: { placeholder: "请输入手机号码" } } },
     { prop: "gender", label: "性别", align: "center" },
     { prop: "balance", label: "余额", align: "right" },
-    { prop: "description", label: "描述", align: "left", minWidth: 150 },
-    { prop: "createdAt", label: "注册时间" },
-    { prop: "operation", label: "操作", minWidth: 150, fixed: "right" }
+    { prop: "description", label: "描述", align: "left" },
+    { prop: "createdAt", label: "注册时间", minWidth: 100 },
+    { prop: "operation", label: "操作", minWidth: 120, fixed: "right" }
   ];
+  // 新增会员信息
   const createMember = () => {
     router.push({ name: "MemberEdit", state: { id: "" } });
   };
+  // 批量添加用户
+  const dialogRef = ref<InstanceType<typeof ImportExcel> | null>(null);
+  const batchImport = () => {
+    const params = {
+      title: "会员导入模板",
+      tempApi: downloadTemplate,
+      importApi: importMembers,
+      getTableList: tableRef.value?.getTableList
+    };
+    dialogRef.value?.acceptParams(params);
+  };
+
   const modifyMember = scope => router.push({ name: "MemberEdit", state: { id: scope.row.memberId } });
   // 删除会员信息
   const deleteMember = async scope => {
@@ -85,16 +106,5 @@
     ElMessageBox.confirm("确认导出用户数据?", "温馨提示", { type: "warning" }).then(() =>
       useDownload(exportMembers, "会员列表导出", tableRef.value?.searchParameters)
     );
-  };
-  // 批量添加用户
-  // const dialogRef = ref<InstanceType<typeof ImportExcel> | null>(null);
-  const batchAdd = () => {
-    // const params = {
-    //   title: "用户",
-    //   tempApi: exportUserInfo,
-    //   importApi: BatchAddUser,
-    //   getTableList: tableRef.value?.getTableList
-    // };
-    // dialogRef.value?.acceptParams(params);
   };
 </script>

@@ -77,6 +77,9 @@ public class MemberController : ControllerBase
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
         var operatorId = passport.UserId;
+        var isExists = await repository.ExistsAsync<Member>(new { Mobile = request.Mobile });
+        if (isExists) return TheaResponse.Fail(1, $"手机号码[{request.Mobile}]已注册为会员");
+
         var result = await repository.CreateAsync<Member>(new
         {
             MemberId = ObjectId.NewId(),
@@ -165,8 +168,11 @@ public class MemberController : ControllerBase
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
-    public async Task<TheaResponse> Import([FromBody] MemberQueryRequest request)
+    public async Task<TheaResponse> Import([FromForm] bool isCover)
     {
+        if (this.Request.Form.Files.Count <= 0)
+            return TheaResponse.Fail(1, "未上传任何文件");
+
         using var repository = this.dbFactory.Create();
         var result = await repository.From<Member>()
             .Where(f => f.Status == DataStatus.Active)
@@ -208,21 +214,21 @@ public class MemberController : ControllerBase
         var genderDecorator = (object data) =>
            (Gender)data switch
            {
-               Gender.Male => "男",
-               Gender.Female => "女",
+               Gender.Male => "男性",
+               Gender.Female => "女性",
                _ => "未知"
            };
         var stream = new MemoryStream();
         var builder = new ExcelExporterBuilder().WithData(result);
         await builder.AddColumnHeader(f => f.Field(t => t.MemberId).Title("会员ID").Width(26.63))
-            .AddColumnHeader(f => f.Field(t => t.MemberName).Title("会员名称").Width(12.13))
-            .AddColumnHeader(f => f.Field(t => t.Mobile).Title("手机号").Width(12.13))
-            .AddColumnHeader(f => f.Field(t => t.Gender).Title("性别").Decorator(genderDecorator).Width(4.63).Horizontal(CellHorizontalAlignment.Center))
-            .AddColumnHeader(f => f.Field(t => t.Balance).Title("余额").Format("&quot;¥&quot;#,##0.00;&quot;¥&quot;\\-#,##0.00").Width(9.88))
-            .AddColumnHeader(f => f.Field(t => t.Description).Title("描述"))
-            .AddColumnHeader(f => f.Field(t => t.CreatedAt).Title("注册时间").Width(21).Format("yyyy-MM-dd HH:mm:ss"))
+            .AddColumnHeader(f => f.Field(t => t.MemberName).Title("会员名称").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Mobile).Title("手机号").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Gender).Title("性别").Decorator(genderDecorator).Width(6.38).Horizontal(CellHorizontalAlignment.Center))
+            .AddColumnHeader(f => f.Field(t => t.Balance).Title("余额").Format("&quot;¥&quot;#,##0.00;&quot;¥&quot;\\-#,##0.00").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Description).Title("描述").Width(35.25))
+            .AddColumnHeader(f => f.Field(t => t.CreatedAt).Title("注册时间").Width(21).Format("yyyy-MM-dd HH:mm:ss").Horizontal(CellHorizontalAlignment.Center))
             .Export(stream);
         stream.Position = 0;
-        return this.File(stream, "application/vnd.ms-excel", "export.xlsx");
+        return this.File(stream, "application/vnd.ms-excel");
     }
 }

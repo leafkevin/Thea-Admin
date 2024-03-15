@@ -16,8 +16,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="余额" prop="balance">
-        <template #prepend>¥</template>
-        <el-input v-model="ruleForm.balance" placeholder="请输入充值余额，必填，并且>0" />
+        <el-input v-model="ruleForm.balance" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
+          <template #prepend>¥</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="描述">
         <el-input v-model="ruleForm.description" placeholder="请输入描述信息" type="textarea" clearable />
@@ -50,12 +51,12 @@
   const tabPageStore = useTabPageStore();
   const memberId = history.state.id as string;
 
-  const ruleForm = reactive({
+  const ruleForm = reactive<IMemberState>({
     memberId: memberId,
     memberName: "",
     mobile: "",
     gender: 0,
-    balance: 0.0,
+    balance: "0.00",
     description: ""
   });
   onActivated(async () => {
@@ -76,14 +77,16 @@
       ruleForm.memberName = memberState.memberName;
       ruleForm.mobile = memberState.mobile;
       ruleForm.gender = memberState.gender;
-      ruleForm.balance = memberState.balance;
+      ruleForm.balance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        memberState.balance as number
+      );
       ruleForm.description = memberState.description;
     } else {
       ruleForm.memberId = "";
       ruleForm.memberName = "";
       ruleForm.mobile = "";
       ruleForm.gender = 0;
-      ruleForm.balance = 0.0;
+      ruleForm.balance = "0.00";
       ruleForm.description = "";
     }
     loading.value = false;
@@ -120,6 +123,15 @@
         console.log("error submit!", fields);
       }
     });
+  };
+  const parseNumber = () => {
+    const formattedValue = ruleForm.balance.toString();
+    ruleForm.balance = formattedValue.replace(/\$\s?|(,*)/g, "");
+  };
+  const formatText = () => {
+    const formattedValue = ruleForm.balance.toString();
+    const orgiValue = parseFloat(formattedValue);
+    ruleForm.balance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(orgiValue);
   };
   const goBack = () => {
     tabPageStore.removeTabPage(currentRoute.fullPath);
