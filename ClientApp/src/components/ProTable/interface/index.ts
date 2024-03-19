@@ -1,7 +1,7 @@
 import { VNode, ComponentPublicInstance, Ref } from "vue";
 import { BreakPoint, Responsive } from "@/components/Grid/interface";
 import { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
-import { ProTableProps } from "@/components/ProTable/index.vue";
+import { IProTableProps } from "@/components/ProTable/index.vue";
 import ProTable from "@/components/ProTable/index.vue";
 
 export interface EnumProps {
@@ -36,7 +36,7 @@ export type SearchRenderScope = {
   data: EnumProps[];
 };
 
-export type SearchProps = {
+export type ISearchProps = {
   el?: SearchType; // 当前项搜索框的类型
   label?: string; // 当前项搜索框的 label
   props?: any; // 搜索项参数，根据 element plus 官方文档来传递，该属性所有值会透传到组件
@@ -73,7 +73,7 @@ export interface IColumnProps<T = any>
   type?: TypeProps; // 列类型
   tag?: boolean | Ref<boolean>; // 是否是标签展示
   isShow?: boolean | Ref<boolean>; // 是否显示在表格当中
-  search?: SearchProps | undefined; // 搜索项配置
+  search?: ISearchProps | undefined; // 搜索项配置
   enum?: EnumProps[] | Ref<EnumProps[]> | ((params?: any) => Promise<any>); // 枚举字典
   isFilterEnum?: boolean | Ref<boolean>; // 当前单元格值是否根据 enum 格式化（示例：enum 只作为搜索项数据）
   fieldNames?: FieldNamesProps; // 指定 label && value && children 的 key 值
@@ -82,4 +82,4 @@ export interface IColumnProps<T = any>
   _children?: IColumnProps<T>[]; // 多级表头
 }
 
-export type ProTableInstance = Omit<InstanceType<typeof ProTable>, keyof ComponentPublicInstance | keyof ProTableProps>;
+export type ProTableInstance = Omit<InstanceType<typeof ProTable>, keyof ComponentPublicInstance | keyof IProTableProps>;

@@ -111,7 +111,7 @@
   import TableColumn from "./components/TableColumn.vue";
   import Sortable from "sortablejs";
 
-  export interface ProTableProps {
+  export interface IProTableProps {
     columns: IColumnProps[]; // 列配置项  ==> 必传
     data?: any[]; // 静态 table data 数据，若存在则不会使用 requestApi 返回的 data ==> 非必传
     requestApi?: (params: any) => Promise<any>; // 请求表格数据的 api ==> 非必传
@@ -128,7 +128,7 @@
   }
 
   // 接受父组件参数，配置默认值
-  const props = withDefaults(defineProps<ProTableProps>(), {
+  const props = withDefaults(defineProps<IProTableProps>(), {
     columns: () => [],
     requestAuto: true,
     isPaging: true,

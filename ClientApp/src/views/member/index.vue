@@ -65,8 +65,34 @@
   // 表格配置项
   const columns: IColumnProps[] = [
     { type: "selection", fixed: "left", width: 70 },
-    { prop: "memberName", label: "会员名称", align: "center", search: { el: "input", props: { placeholder: "请输入会员名称" } } },
-    { prop: "mobile", label: "手机号码", align: "center", search: { el: "input", props: { placeholder: "请输入手机号码" } } },
+    {
+      prop: "memberName",
+      label: "会员名称",
+      align: "center",
+      search: {
+        el: "input",
+        props: {
+          placeholder: "请输入会员名称",
+          onkeyup: async event => {
+            if (event.keyCode === 13) await tableRef.value?.search();
+          }
+        }
+      }
+    },
+    {
+      prop: "mobile",
+      label: "手机号码",
+      align: "center",
+      search: {
+        el: "input",
+        props: {
+          placeholder: "请输入会员手机号码",
+          onkeyup: async event => {
+            if (event.keyCode === 13) await tableRef.value?.search();
+          }
+        }
+      }
+    },
     { prop: "gender", label: "性别", align: "center" },
     { prop: "balance", label: "余额", align: "right" },
     { prop: "description", label: "备注", align: "left" },
@@ -95,17 +121,17 @@
   // 删除会员信息
   const deleteMember = async scope => {
     await useHandleData(deleteMemberApi, { id: scope.row.memberId }, `删除【${scope.row.memberName}】用户`);
-    tableRef.value?.getTableList();
+    await tableRef.value?.search();
   };
   // 批量删除用户信息
   const batchDelete = async (ids: string[]) => {
     await useHandleData(batchDeleteMembers, { ids }, "删除所选会员信息");
     tableRef.value?.clearSelection();
-    tableRef.value?.getTableList();
+    await tableRef.value?.search();
   };
   // 导出用户列表
   const downloadFile = async () => {
-    ElMessageBox.confirm("确认导出用户数据?", "温馨提示", { type: "warning" }).then(() =>
+    ElMessageBox.confirm("确认导会员列表吗?", "温馨提示", { type: "warning" }).then(() =>
       useDownload(exportMembers, "会员列表导出", tableRef.value?.searchParameters)
     );
   };

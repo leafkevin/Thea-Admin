@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Thea;
+using TheaAdmin.Domain;
 using TheaAdmin.Domain.Models;
 using TheaAdmin.Domain.Services;
 using TheaAdmin.Dtos;
-using System.Threading.Tasks;
-using Thea;
 using Trolley;
 
 namespace TheaAdmin.Controllers;
@@ -22,13 +23,14 @@ public class DepositController : ControllerBase
         this.dbFactory = dbFactory;
     }
     [HttpPost]
-    public async Task<TheaResponse> QueryPage(QueryPageRequest request)
+    public async Task<TheaResponse> QueryPage([FromBody] MemberQueryRequest request)
     {
         using var repository = this.dbFactory.Create();
         var result = await repository.From<Member>()
             .LeftJoin<Deposit>((a, b) => a.MemberId == b.MemberId)
-            .Where(!string.IsNullOrEmpty(request.QueryText), (a, b) => a.Mobile.Contains(request.QueryText)
-                || a.MemberName.Contains(request.QueryText))
+            .Where((a, b) => a.Status == DataStatus.Active)
+            .And(!string.IsNullOrEmpty(request.MemberName), (a, b) => a.MemberName.Contains(request.MemberName))
+            .And(!string.IsNullOrEmpty(request.Mobile), (a, b) => a.Mobile.Contains(request.Mobile))
             .GroupBy((a, b) => new { a.MemberId, a.MemberName, a.Mobile, a.Balance })
             .Select((x, a, b) => new
             {
@@ -36,8 +38,10 @@ public class DepositController : ControllerBase
                 a.MemberName,
                 a.Mobile,
                 a.Balance,
-                DepositTimes = x.Count(b.DepositId)
+                DepositTimes = x.Count(b.DepositId),
+                LastDepositedAt = x.Max(b.CreatedAt)
             })
+            .OrderByDescending(f => f.LastDepositedAt)
             .Page(request.PageIndex, request.PageSize)
             .ToPageListAsync();
         return TheaResponse.Succeed(result);

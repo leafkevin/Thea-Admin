@@ -8,6 +8,7 @@
     <template v-if="column.search?.el === 'cascader'" #default="{ data }">
       <span>{{ data[fieldNames.label] }}</span>
     </template>
+
     <template v-if="column.search?.el === 'select'">
       <component
         :is="`el-option`"
