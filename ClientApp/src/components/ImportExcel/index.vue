@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="批量导入" :destroy-on-close="true" width="580px" draggable>
+  <el-dialog v-model="dialogVisible" :title="importParameters.title" :destroy-on-close="true" width="580px" draggable>
     <el-form class="drawer-multiColumn-form" label-width="100px">
       <el-form-item label="模板下载 :" class="el-dialog_body-margin_top">
         <el-button type="primary" :icon="Download" @click="downloadTemp"> 点击下载 </el-button>
@@ -17,7 +17,7 @@
           :on-exceed="handleExceed"
           :on-success="excelUploadSuccess"
           :on-error="excelUploadError"
-          :accept="parameter.fileType!.join(',')">
+          :accept="importParameters.fileType!.join(',')">
           <slot name="empty">
             <el-icon class="el-icon--upload">
               <upload-filled />
@@ -26,13 +26,13 @@
           </slot>
           <template #tip>
             <slot name="tip">
-              <div class="el-upload__tip">请上传 .xls , .xlsx 标准格式文件，文件最大为 {{ parameter.fileSize }}M</div>
+              <div class="el-upload__tip">请上传 .xls , .xlsx 标准格式文件，文件最大为 {{ importParameters.fileSize }}M</div>
             </slot>
           </template>
         </el-upload>
       </el-form-item>
       <el-form-item label="注意 :">
-        <el-text type="warning"> {{ parameter.skipContent }} </el-text>
+        <el-text type="warning"> {{ importParameters.skipContent }} </el-text>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -46,6 +46,7 @@
 
   export interface ExcelParameterProps {
     title: string; // 标题
+    templateName: string; //下载模板标题
     fileSize?: number; // 上传文件的大小
     fileType?: File.ExcelMimeType[]; // 上传文件的类型
     skipContent: string; // 存在数据跳过描述文本
@@ -59,31 +60,32 @@
   // dialog状态
   const dialogVisible = ref(false);
   // 父组件传过来的参数
-  const parameter = ref<ExcelParameterProps>({
-    title: "",
+  const importParameters = ref<ExcelParameterProps>({
+    title: "批量导入",
+    templateName: "批量导入模板",
     fileSize: 5,
     fileType: ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
     skipContent: "导入过程中，已存在的数据将会跳过，不会导入！"
   });
 
   // 接收父组件参数
-  const acceptParams = (params: ExcelParameterProps) => {
-    parameter.value = { ...parameter.value, ...params };
+  const acceptParameters = (params: ExcelParameterProps) => {
+    importParameters.value = { ...importParameters.value, ...params };
     dialogVisible.value = true;
   };
 
   // Excel 导入模板下载
   const downloadTemp = () => {
-    if (!parameter.value.tempApi) return;
-    useDownload(parameter.value.tempApi, parameter.value.title, {}, false);
+    if (!importParameters.value.tempApi) return;
+    useDownload(importParameters.value.tempApi, importParameters.value.title, {}, false);
   };
 
   // 文件上传
   const uploadExcel = async (param: UploadRequestOptions) => {
     let excelFormData = new FormData();
     excelFormData.append("file", param.file);
-    await parameter.value.importApi!(excelFormData);
-    parameter.value.getTableList && parameter.value.getTableList();
+    await importParameters.value.importApi!(excelFormData);
+    importParameters.value.getTableList && importParameters.value.getTableList();
     dialogVisible.value = false;
   };
 
@@ -92,8 +94,8 @@
    * @param file 上传的文件
    * */
   const beforeExcelUpload = (file: UploadRawFile) => {
-    const isExcel = parameter.value.fileType!.includes(file.type as File.ExcelMimeType);
-    const fileSize = file.size / 1024 / 1024 < parameter.value.fileSize!;
+    const isExcel = importParameters.value.fileType!.includes(file.type as File.ExcelMimeType);
+    const fileSize = file.size / 1024 / 1024 < importParameters.value.fileSize!;
     if (!isExcel)
       ElNotification({
         title: "温馨提示",
@@ -104,7 +106,7 @@
       setTimeout(() => {
         ElNotification({
           title: "温馨提示",
-          message: `上传文件大小不能超过 ${parameter.value.fileSize}MB！`,
+          message: `上传文件大小不能超过 ${importParameters.value.fileSize}MB！`,
           type: "warning"
         });
       }, 0);
@@ -124,7 +126,7 @@
   const excelUploadError = () => {
     ElNotification({
       title: "温馨提示",
-      message: `批量添加${parameter.value.title}失败，请您重新上传！`,
+      message: `${importParameters.value.title}失败，请您重新上传！`,
       type: "error"
     });
   };
@@ -133,13 +135,13 @@
   const excelUploadSuccess = () => {
     ElNotification({
       title: "温馨提示",
-      message: `批量添加${parameter.value.title}成功！`,
+      message: `${importParameters.value.title}成功！`,
       type: "success"
     });
   };
 
   defineExpose({
-    acceptParams
+    acceptParameters
   });
 </script>
 <style lang="scss" scoped>

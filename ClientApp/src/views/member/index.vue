@@ -69,7 +69,7 @@
     { prop: "mobile", label: "手机号码", align: "center", search: { el: "input", props: { placeholder: "请输入手机号码" } } },
     { prop: "gender", label: "性别", align: "center" },
     { prop: "balance", label: "余额", align: "right" },
-    { prop: "description", label: "描述", align: "left" },
+    { prop: "description", label: "备注", align: "left" },
     { prop: "createdAt", label: "注册时间", minWidth: 100 },
     { prop: "operation", label: "操作", minWidth: 120, fixed: "right" }
   ];
@@ -81,13 +81,14 @@
   const dialogRef = ref<InstanceType<typeof ImportExcel> | null>(null);
   const batchImport = () => {
     const params = {
-      title: "会员导入模板",
+      title: "会员批量导入",
+      templateName: "会员导入模板",
       skipContent: "存在相同手机号码的会员数据，将被跳过不会导入！",
       tempApi: downloadTemplate,
       importApi: importMembers,
       getTableList: tableRef.value?.getTableList
     };
-    dialogRef.value?.acceptParams(params);
+    dialogRef.value?.acceptParameters(params);
   };
 
   const modifyMember = scope => router.push({ name: "MemberEdit", state: { id: scope.row.memberId } });

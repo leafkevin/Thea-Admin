@@ -17,8 +17,8 @@ export const getMember = (id: string) => {
 export const createMember = (parameters: object) => {
   return http.post("/member/create", parameters);
 };
-export const importMembers = (parameters: object) => {
-  return http.post("/member/import", parameters);
+export const importMembers = (parameters: FormData) => {
+  return http.upload("/member/import", parameters);
 };
 export const modifyMember = (parameters: object) => {
   return http.post("/member/modify", parameters);

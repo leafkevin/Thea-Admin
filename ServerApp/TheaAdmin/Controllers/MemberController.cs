@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MiniExcelLibs;
 using System;
 using System.IO;
 using System.Linq;
@@ -27,11 +28,10 @@ public class MemberController : ControllerBase
     public async Task<TheaResponse> QueryPage([FromBody] MemberQueryRequest request)
     {
         using var repository = this.dbFactory.Create();
-        var result = await repository.From<Member>()
+        var result = await repository.From<Domain.Models.Member>()
             .Where(f => f.Status == DataStatus.Active)
             .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
             .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile))
-            .Page(request.PageIndex, request.PageSize)
             .Select(f => new
             {
                 f.MemberId,
@@ -42,6 +42,8 @@ public class MemberController : ControllerBase
                 f.Description,
                 f.CreatedAt
             })
+            .Page(request.PageIndex, request.PageSize)
+            .OrderByDescending(f => f.MemberId)
             .ToPageListAsync();
         return TheaResponse.Succeed(result);
     }
@@ -52,7 +54,7 @@ public class MemberController : ControllerBase
             return TheaResponse.Fail(1, $"会员ID不能为空");
 
         using var repository = this.dbFactory.Create();
-        var result = await repository.From<Member>()
+        var result = await repository.From<Domain.Models.Member>()
             .Where(f => f.MemberId == id)
             .Select(f => new
             {
@@ -77,10 +79,10 @@ public class MemberController : ControllerBase
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
         var operatorId = passport.UserId;
-        var isExists = await repository.ExistsAsync<Member>(new { Mobile = request.Mobile });
+        var isExists = await repository.ExistsAsync<Domain.Models.Member>(new { Mobile = request.Mobile });
         if (isExists) return TheaResponse.Fail(1, $"手机号码[{request.Mobile}]已注册为会员");
 
-        var result = await repository.CreateAsync<Member>(new
+        var result = await repository.CreateAsync<Domain.Models.Member>(new
         {
             MemberId = ObjectId.NewId(),
             request.MemberName,
@@ -111,7 +113,7 @@ public class MemberController : ControllerBase
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
         var operatorId = passport.UserId;
-        var result = await repository.UpdateAsync<Member>(new
+        var result = await repository.UpdateAsync<Domain.Models.Member>(new
         {
             request.MemberId,
             request.MemberName,
@@ -135,7 +137,7 @@ public class MemberController : ControllerBase
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
         var operatorId = passport.UserId;
-        var result = await repository.UpdateAsync<Member>(new
+        var result = await repository.UpdateAsync<Domain.Models.Member>(new
         {
             MemberId = request.Id,
             Status = 2,
@@ -162,40 +164,60 @@ public class MemberController : ControllerBase
             UpdatedAt = DateTime.Now,
             UpdatedBy = passport.UserId
         });
-        var result = await repository.UpdateAsync<Member>(entities);
+        var result = await repository.UpdateAsync<Domain.Models.Member>(entities);
         if (result <= 0)
             return TheaResponse.Fail(2, $"操作失败，请重试");
         return TheaResponse.Succeed(result);
     }
     [HttpPost]
-    public async Task<TheaResponse> Import([FromForm] bool isCover)
+    public async Task<TheaResponse> Import()
     {
         if (this.Request.Form.Files.Count <= 0)
             return TheaResponse.Fail(1, "未上传任何文件");
+        var formFile = this.Request.Form.Files[0];
+        var stream = new MemoryStream();
+        await formFile.CopyToAsync(stream);
+        var importMembers = stream.Query<MemberImportRequest>().ToList();
+        var mobiles = importMembers.Select(f => f.Mobile).ToList();
 
         using var repository = this.dbFactory.Create();
-        var result = await repository.From<Member>()
-            .Where(f => f.Status == DataStatus.Active)
-            .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
-            .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile))
-            .Select(f => new
-            {
-                f.MemberId,
-                f.MemberName,
-                f.Mobile,
-                f.Gender,
-                f.Balance,
-                f.Description,
-                f.CreatedAt
-            })
+        var existsMobiles = await repository.From<Domain.Models.Member>()
+            .Where(f => f.Status == DataStatus.Active && mobiles.Contains(f.Mobile))
+            .Select(f => f.Mobile)
             .ToListAsync();
-        return TheaResponse.Succeed(result);
+        if (existsMobiles.Count > 0)
+        {
+            foreach (var existsMobile in existsMobiles)
+            {
+                var removeMember = importMembers.Find(f => f.Mobile == existsMobile);
+                importMembers.Remove(removeMember);
+            }
+        }
+        var passport = this.User.ToPassport();
+        var members = importMembers.Select(f => new Domain.Models.Member
+        {
+            MemberId = ObjectId.NewId(),
+            MemberName = f.MemberName,
+            Balance = f.Balance,
+            Gender = f.Gender,
+            Description = f.Description,
+            Mobile = f.Mobile,
+            Status = DataStatus.Active,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = passport.UserId,
+            UpdatedAt = DateTime.UtcNow,
+            UpdatedBy = passport.UserId
+        });
+        var count = await repository.CreateAsync<Domain.Models.Member>(members);
+        if (count <= 0)
+            return TheaResponse.Fail(2, $"操作失败，请重试");
+        return TheaResponse.Success;
     }
     [HttpPost]
     public async Task<FileStreamResult> Export([FromBody] MemberQueryRequest request)
     {
         using var repository = this.dbFactory.Create();
-        var result = await repository.From<Member>()
+        var result = await repository.From<Domain.Models.Member>()
             .Where(f => f.Status == DataStatus.Active)
             .And(!string.IsNullOrEmpty(request.MemberName), f => f.MemberName.Contains(request.MemberName))
             .And(!string.IsNullOrEmpty(request.Mobile), f => f.Mobile.Contains(request.Mobile))

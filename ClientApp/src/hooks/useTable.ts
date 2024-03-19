@@ -134,7 +134,6 @@ export const useTable = (
    * @return void
    * */
   const handleSizeChange = (val: number) => {
-    state.pagination.pageIndex = 1;
     state.pagination.pageSize = val;
     getTableList();
   };

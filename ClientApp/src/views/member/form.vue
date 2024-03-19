@@ -20,8 +20,8 @@
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
-      <el-form-item label="描述">
-        <el-input v-model="ruleForm.description" placeholder="请输入描述信息" type="textarea" clearable />
+      <el-form-item label="备注">
+        <el-input v-model="ruleForm.description" placeholder="请输入备注信息" type="textarea" clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)"> 保存 </el-button>

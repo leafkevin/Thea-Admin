@@ -33,8 +33,6 @@ const config = {
 
 class RequestHttp {
   service: AxiosInstance;
-  /** token过期后，暂存待执行的请求 */
-  private static requests: any[] = [];
 
   public constructor(config: AxiosRequestConfig) {
     // instantiation
@@ -138,20 +136,23 @@ class RequestHttp {
   /**
    * @description 常用请求方法封装
    */
-  get(url: string, params?: object): Promise<IResponse> {
-    return this.service.get(url, params);
+  get(url: string, config = {}): Promise<IResponse> {
+    return this.service.get(url, config);
   }
-  post(url: string, params?: object): Promise<IResponse> {
-    return this.service.post(url, params);
+  post(url: string, params?: object, config = {}): Promise<IResponse> {
+    return this.service.post(url, params, config);
   }
-  put(url: string, params?: object): Promise<IResponse> {
-    return this.service.put(url, params);
+  put(url: string, params?: object, config = {}): Promise<IResponse> {
+    return this.service.put(url, params, config);
   }
   delete(url: string, params?: object): Promise<IResponse> {
     return this.service.delete(url, params);
   }
   download(url: string, params?: object): Promise<BlobPart> {
     return this.service.post(url, params, { responseType: "blob" });
+  }
+  upload(url: string, params: FormData): Promise<BlobPart> {
+    return this.service.post(url, params, { headers: { "Content-Type": "multipart/form-data" } });
   }
 }
 
