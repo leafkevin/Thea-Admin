@@ -15,7 +15,7 @@
           <el-radio-button label="女性" :value="2" />
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="余额" prop="balance">
+      <el-form-item label="余额" prop="balance" :is-show="isEdit">
         <el-input v-model="ruleForm.balance" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
           <template #prepend>¥</template>
         </el-input>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref, onActivated } from "vue";
+  import { reactive, ref, onActivated, computed } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import { checkPhoneNumber } from "@/utils/eleValidate";
   import type { FormInstance, FormRules } from "element-plus";
@@ -51,6 +51,7 @@
   const tabPageStore = useTabPageStore();
   const memberId = history.state.id as string;
 
+  const isEdit = computed(() => memberId && memberId.length > 0);
   const ruleForm = reactive<IMemberState>({
     memberId: memberId,
     memberName: "",

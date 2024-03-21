@@ -38,8 +38,8 @@ public class DepositController : ControllerBase
                 a.MemberName,
                 a.Mobile,
                 a.Balance,
-                DepositTimes = x.Count(b.DepositId),
-                LastDepositedAt = x.Max(b.CreatedAt)
+                DepositTimes = x.Count(b.DepositId).IfNull(0),
+                LastDepositedAt = x.Max(b.CreatedAt).IfNull(a.CreatedAt)
             })
             .OrderByDescending(f => f.LastDepositedAt)
             .Page(request.PageIndex, request.PageSize)

@@ -82,14 +82,14 @@ public class MemberController : ControllerBase
         var isExists = await repository.ExistsAsync<Domain.Models.Member>(new { Mobile = request.Mobile });
         if (isExists) return TheaResponse.Fail(1, $"手机号码[{request.Mobile}]已注册为会员");
 
+        var memberId = ObjectId.NewId();
         var result = await repository.CreateAsync<Domain.Models.Member>(new
         {
-            MemberId = ObjectId.NewId(),
+            MemberId = memberId,
             request.MemberName,
             request.Mobile,
             request.Gender,
             request.Description,
-            request.Balance,
             Status = 1,
             CreatedAt = DateTime.Now,
             CreatedBy = operatorId,

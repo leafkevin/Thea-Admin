@@ -32,10 +32,9 @@
   import { EditPen, Download } from "@element-plus/icons-vue";
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
-  import { queryPage, exportMembers } from "@/api/member";
+  import { queryPage, exportDeposits } from "@/api/deposit";
   import { ElMessageBox } from "element-plus";
   import { useDownload } from "@/hooks/useDownload";
-  import ImportExcel from "@/components/ImportExcel/index.vue";
 
   defineOptions({
     name: "MemberList"
@@ -49,9 +48,30 @@
       prop: "memberName",
       label: "会员名称",
       align: "center",
-      search: { el: "input", props: { placeholder: "请输入会员名称" } }
+      search: {
+        el: "input",
+        props: {
+          placeholder: "请输入会员名称",
+          onkeyup: async event => {
+            if (event.keyCode === 13) await tableRef.value?.search();
+          }
+        }
+      }
     },
-    { prop: "mobile", label: "手机号码", align: "center", search: { el: "input", props: { placeholder: "请输入会员手机号码" } } },
+    {
+      prop: "mobile",
+      label: "手机号码",
+      align: "center",
+      search: {
+        el: "input",
+        props: {
+          placeholder: "请输入会员手机号码",
+          onkeyup: async event => {
+            if (event.keyCode === 13) await tableRef.value?.search();
+          }
+        }
+      }
+    },
     { prop: "balance", label: "余额", align: "right" },
     { prop: "description", label: "备注", align: "left" },
     { prop: "depositTimes", label: "共充值", minWidth: 100 },
@@ -63,7 +83,7 @@
   // 导出用户列表
   const downloadFile = async () => {
     ElMessageBox.confirm("确认导出充值列表吗?", "温馨提示", { type: "warning" }).then(() =>
-      useDownload(exportMembers, "充值列表导出", tableRef.value?.searchParameters)
+      useDownload(exportDeposits, "充值列表导出", tableRef.value?.searchParameters)
     );
   };
 </script>

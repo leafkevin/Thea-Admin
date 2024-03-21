@@ -193,16 +193,16 @@ public partial class MySqlProvider : BaseOrmProvider
     {
         var methodInfo = methodCallExpr.Method;
         var parameterInfos = methodInfo.GetParameters();
+        int cacheKey = 0;
         switch (methodInfo.Name)
         {
             case "Values":
                 var genericArgumentTypes = methodInfo.DeclaringType.GetGenericArguments();
                 if (genericArgumentTypes.Length == 1 && methodInfo.DeclaringType == typeof(IMySqlCreateDuplicateKeyUpdate<>).MakeGenericType(genericArgumentTypes[0]))
                 {
-                    var genericArgumentType = methodInfo.GetGenericArguments()[0];
-                    var cacheKey = HashCode.Combine(typeof(IMySqlCreateDuplicateKeyUpdate<>), methodInfo);
+                    cacheKey = HashCode.Combine(typeof(IMySqlCreateDuplicateKeyUpdate<>), methodInfo.GetGenericMethodDefinition());
                     //.Set(f => new { TotalAmount = f.TotalAmount + x.Values(f.TotalAmount) })
-                    methodCallSqlFormatterCache.TryAdd(cacheKey, formatter = (visitor, orgExpr, target, deferExprs, args) =>
+                    formatter = methodCallSqlFormatterCache.GetOrAdd(cacheKey, (visitor, orgExpr, target, deferExprs, args) =>
                     {
                         var myVisitor = visitor as MySqlCreateVisitor;
                         if (args[0] is not MemberExpression memberExpr)
@@ -225,6 +225,17 @@ public partial class MySqlProvider : BaseOrmProvider
                     return true;
                 }
                 break;
+            case "IsNull":
+                cacheKey = HashCode.Combine(typeof(Sql), methodInfo.GetGenericMethodDefinition());
+                formatter = methodCallSqlFormatterCache.GetOrAdd(cacheKey, (visitor, orgExpr, target, deferExprs, args) =>
+                {
+                    var targetSegment = visitor.VisitAndDeferred(new SqlSegment { Expression = args[0] });
+                    var rightSegment = visitor.VisitAndDeferred(new SqlSegment { Expression = args[1] });
+                    var targetArgument = visitor.GetQuotedValue(targetSegment);
+                    var rightArgument = visitor.GetQuotedValue(rightSegment);
+                    return targetSegment.Merge(rightSegment, $"IFNULL({targetArgument},{rightArgument})", false, false, false, true);
+                });
+                return true;
         }
         formatter = null;
         return false;
