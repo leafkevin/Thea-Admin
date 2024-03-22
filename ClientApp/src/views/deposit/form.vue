@@ -3,25 +3,33 @@
   <div v-else class="card content-box">
     <el-form ref="formRef" :model="ruleForm" :rules="rules" label-width="140px">
       <el-form-item label="会员名称" prop="memberName">
-        <el-input v-model="ruleForm.memberName" placeholder="请输入会员名称，必填" clearable />
+        <el-input v-model="ruleForm.memberName" disabled />
       </el-form-item>
       <el-form-item label="会员手机号" prop="mobile">
-        <el-input v-model="ruleForm.mobile" placeholder="请输入会员手机号码，必填" clearable />
+        <el-input v-model="ruleForm.mobile" disabled />
       </el-form-item>
-      <el-form-item label="性别">
-        <el-radio-group v-model="ruleForm.gender">
-          <el-radio-button label="未知" :value="0" />
-          <el-radio-button label="男性" :value="1" />
-          <el-radio-button label="女性" :value="2" />
-        </el-radio-group>
+      <el-form-item label="上次余额" prop="balance">
+        <el-input v-model="ruleForm.balance" disabled>
+          <template #prepend>¥</template>
+        </el-input>
       </el-form-item>
-      <el-form-item label="余额" prop="balance">
-        <el-input v-model="ruleForm.balance" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
+      <el-form-item label="充值金额" prop="amount">
+        <el-input v-model="ruleForm.amount" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
+          <template #prepend>¥</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="赠送金额" prop="bonus">
+        <el-input v-model="ruleForm.bonus" placeholder="请输入赠送余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="ruleForm.description" placeholder="请输入备注信息" type="textarea" clearable />
+        <el-input
+          v-model="ruleForm.description"
+          placeholder="请输入备注信息"
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 5 }"
+          clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)"> 保存 </el-button>
@@ -37,11 +45,11 @@
   import { checkPhoneNumber } from "@/utils/eleValidate";
   import type { FormInstance, FormRules } from "element-plus";
   import { ElNotification } from "element-plus";
-  import { IMemberState, createMember, getMember, modifyMember } from "@/api/member";
+  import { IDepositState, createDeposit, exportDeposits } from "@/api/deposit";
   import { useTabPageStore } from "@/stores/tabPages";
 
   defineOptions({
-    name: "NewDeposit"
+    name: "DepositEdit"
   });
 
   const loading = ref(false);
@@ -51,12 +59,13 @@
   const tabPageStore = useTabPageStore();
   const memberId = history.state.id as string;
 
-  const ruleForm = reactive<IMemberState>({
+  const ruleForm = reactive<IDepositState>({
     memberId: memberId,
     memberName: "",
     mobile: "",
-    gender: 0,
     balance: "0.00",
+    amount: "0.00",
+    bonus: "0.00",
     description: ""
   });
   onActivated(async () => {

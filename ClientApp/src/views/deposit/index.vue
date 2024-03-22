@@ -19,7 +19,9 @@
       <template #depositTimes="scope"> {{ scope.row.depositTimes }}次 </template>
       <!-- 菜单操作 -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="EditPen" @click="createDeposit(scope)"> 充值 </el-button>
+        <el-button type="primary" link :icon="CirclePlus" @click="createDeposit(scope)"> 充值 </el-button>
+        <el-button type="primary" link :icon="EditPen" @click="modifyDeposit(scope)"> 编辑 </el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteDeposit(scope)"> 删除 </el-button>
       </template>
     </ProTable>
     <ImportExcel ref="dialogRef" />
@@ -29,7 +31,7 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import { IColumnProps, ProTableInstance } from "@/components/ProTable/interface";
-  import { EditPen, Download } from "@element-plus/icons-vue";
+  import { Delete, EditPen, CirclePlus, Download } from "@element-plus/icons-vue";
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
   import { queryPage, exportDeposits } from "@/api/deposit";

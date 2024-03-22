@@ -15,13 +15,18 @@
           <el-radio-button label="女性" :value="2" />
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="余额" prop="balance" :is-show="isEdit">
+      <el-form-item label="余额" prop="balance" v-if="isEdit">
         <el-input v-model="ruleForm.balance" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="ruleForm.description" placeholder="请输入备注信息" type="textarea" clearable />
+        <el-input
+          v-model="ruleForm.description"
+          placeholder="请输入备注信息"
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 5 }"
+          clearable />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm(formRef)"> 保存 </el-button>

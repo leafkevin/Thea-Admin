@@ -27,21 +27,21 @@ public class DepositController : ControllerBase
     {
         using var repository = this.dbFactory.Create();
         var result = await repository.From<Member>()
-            .LeftJoin<Deposit>((a, b) => a.MemberId == b.MemberId)
+            .InnerJoin<Deposit>((a, b) => a.MemberId == b.MemberId)
             .Where((a, b) => a.Status == DataStatus.Active)
             .And(!string.IsNullOrEmpty(request.MemberName), (a, b) => a.MemberName.Contains(request.MemberName))
             .And(!string.IsNullOrEmpty(request.Mobile), (a, b) => a.Mobile.Contains(request.Mobile))
-            .GroupBy((a, b) => new { a.MemberId, a.MemberName, a.Mobile, a.Balance })
-            .Select((x, a, b) => new
+            .OrderByDescending((a, b) => b.CreatedAt)
+            .Select((a, b) => new
             {
+                b.DepositId,
                 a.MemberId,
                 a.MemberName,
                 a.Mobile,
+                b.Amount,
                 a.Balance,
-                DepositTimes = x.Count(b.DepositId).IsNull(0),
-                LastDepositedAt = x.Max(b.CreatedAt).IsNull(a.CreatedAt)
+                b.CreatedAt
             })
-            .OrderByDescending(f => f.LastDepositedAt)
             .Page(request.PageIndex, request.PageSize)
             .ToPageListAsync();
         return TheaResponse.Succeed(result);
