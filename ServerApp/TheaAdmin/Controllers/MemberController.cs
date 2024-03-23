@@ -79,7 +79,7 @@ public class MemberController : ControllerBase
         using var repository = this.dbFactory.Create();
         var passport = this.User.ToPassport();
         var operatorId = passport.UserId;
-        var isExists = await repository.ExistsAsync<Domain.Models.Member>(new { Mobile = request.Mobile });
+        var isExists = await repository.ExistsAsync<Domain.Models.Member>(new { Mobile = request.Mobile, Status = DataStatus.Active });
         if (isExists) return TheaResponse.Fail(1, $"手机号码[{request.Mobile}]已注册为会员");
 
         var memberId = ObjectId.NewId();
