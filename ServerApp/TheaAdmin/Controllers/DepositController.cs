@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Thea;
+using Thea.ExcelExporter;
 using TheaAdmin.Domain;
 using TheaAdmin.Domain.Models;
 using TheaAdmin.Domain.Services;
@@ -111,5 +113,44 @@ public class DepositController : ControllerBase
 
         var passport = this.User.ToPassport();
         return await this.depositService.Cancel(request.Id, passport.UserId);
+    }
+    [HttpPost]
+    public async Task<FileStreamResult> Export([FromBody] MemberQueryRequest request)
+    {
+        using var repository = this.dbFactory.Create();
+        var result = await repository.From<Domain.Models.Member, Deposit>()
+            .InnerJoin((a, b) => a.MemberId == b.MemberId)
+            .Where((a, b) => a.Status == DataStatus.Active && b.Status == DataStatus.Active)
+            .And(!string.IsNullOrEmpty(request.MemberName), (a, b) => a.MemberName.Contains(request.MemberName))
+            .And(!string.IsNullOrEmpty(request.Mobile), (a, b) => a.Mobile.Contains(request.Mobile))
+            .OrderByDescending((a, b) => b.CreatedAt)
+            .Select((a, b) => new
+            {
+                b.DepositId,
+                a.MemberId,
+                a.MemberName,
+                a.Mobile,
+                b.BeginBalance,
+                b.Amount,
+                b.Bonus,
+                b.EndBalance,
+                b.Description,
+                b.CreatedAt
+            })
+            .ToListAsync();
+        var stream = new MemoryStream();
+        var builder = new ExcelExporterBuilder().WithData(result);
+        await builder.AddColumnHeader(f => f.Field(t => t.MemberId).Title("会员ID").Width(26.63))
+            .AddColumnHeader(f => f.Field(t => t.MemberName).Title("会员名称").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Mobile).Title("手机号").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.BeginBalance).Title("充值前余额").Format("&quot;¥&quot;#,##0.00;&quot;¥&quot;\\-#,##0.00").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Amount).Title("充值金额").Format("&quot;¥&quot;#,##0.00;&quot;¥&quot;\\-#,##0.00").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Bonus).Title("赠送金额").Format("&quot;¥&quot;#,##0.00;&quot;¥&quot;\\-#,##0.00").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.EndBalance).Title("充值后余额").Format("&quot;¥&quot;#,##0.00;&quot;¥&quot;\\-#,##0.00").Width(13.13))
+            .AddColumnHeader(f => f.Field(t => t.Description).Title("描述").Width(35.25))
+            .AddColumnHeader(f => f.Field(t => t.CreatedAt).Title("充值日期").Width(21).Format("yyyy-MM-dd HH:mm:ss").Horizontal(CellHorizontalAlignment.Center))
+            .Export(stream);
+        stream.Position = 0;
+        return this.File(stream, "application/vnd.ms-excel");
     }
 }
