@@ -16,7 +16,7 @@ export const useHandleData = (
   confirmType: HandleData.MessageType = "warning"
 ) => {
   return new Promise((resolve, reject) => {
-    ElMessageBox.confirm(`确定要${message}?`, "温馨提示", {
+    ElMessageBox.confirm(message, "温馨提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: confirmType,

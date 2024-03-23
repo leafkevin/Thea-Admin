@@ -3,7 +3,7 @@
     <ProTable
       ref="tableRef"
       title="会员充值列表"
-      row-key="memberId"
+      row-key="depositId"
       :indent="20"
       :columns="columns"
       :request-api="queryPage"
@@ -13,18 +13,25 @@
       <template #tableHeader>
         <el-button type="primary" :icon="Download" plain @click="downloadFile">导出</el-button>
       </template>
-      <template #balance="scope">
-        {{ new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY" }).format(scope.row.balance) }}
+      <template #amount="scope">
+        {{ new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY" }).format(scope.row.amount) }}
+      </template>
+      <template #bonus="scope">
+        {{ new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY" }).format(scope.row.bonus) }}
+      </template>
+      <template #endBalance="scope">
+        {{ new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY" }).format(scope.row.endBalance) }}
       </template>
       <template #depositTimes="scope"> {{ scope.row.depositTimes }}次 </template>
       <!-- 菜单操作 -->
       <template #operation="scope">
         <el-button type="primary" link :icon="CirclePlus" @click="createDeposit(scope)"> 充值 </el-button>
         <el-button type="primary" link :icon="EditPen" @click="modifyDeposit(scope)"> 编辑 </el-button>
-        <el-button type="danger" link :icon="Delete" @click="deleteDeposit(scope)"> 删除 </el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteDeposit(scope)" v-if="scope.row.isAllowCancel">
+          撤销
+        </el-button>
       </template>
     </ProTable>
-    <ImportExcel ref="dialogRef" />
   </div>
 </template>
 
@@ -34,9 +41,10 @@
   import { Delete, EditPen, CirclePlus, Download } from "@element-plus/icons-vue";
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
-  import { queryPage, exportDeposits } from "@/api/deposit";
+  import { queryPage, cancelDeposit, exportDeposits } from "@/api/deposit";
   import { ElMessageBox } from "element-plus";
   import { useDownload } from "@/hooks/useDownload";
+  import { useHandleData } from "@/hooks/useHandleData";
 
   defineOptions({
     name: "MemberList"
@@ -74,14 +82,31 @@
         }
       }
     },
-    { prop: "balance", label: "余额", align: "right" },
+    { prop: "amount", label: "充值金额", align: "right" },
+    { prop: "bonus", label: "赠送金额", align: "right" },
+    { prop: "endBalance", label: "充值后余额", align: "right" },
     { prop: "description", label: "备注", align: "left" },
-    { prop: "depositTimes", label: "共充值", minWidth: 100 },
-    { prop: "lastDepositedAt", label: "上次充值", minWidth: 100 },
+    { prop: "createdAt", label: "充值日期", minWidth: 100 },
     { prop: "operation", label: "操作", minWidth: 120, fixed: "right" }
   ];
 
-  const createDeposit = scope => router.push({ name: "NewDeposit", state: { id: scope.row.memberId } });
+  const createDeposit = scope => router.push({ name: "DepositEdit", state: { id: scope.row.memberId, mode: "Create", from: 2 } });
+  const modifyDeposit = scope => router.push({ name: "DepositEdit", state: { id: scope.row.depositId, mode: "Edit", from: 2 } });
+  const deleteDeposit = async scope => {
+    const depositAmount = scope.row.amount + scope.row.bonus;
+    const formattedValue = new Intl.NumberFormat("zh-CN", {
+      style: "currency",
+      currency: "CNY",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(depositAmount);
+    await useHandleData(
+      cancelDeposit,
+      { id: scope.row.depositId },
+      `确定要撤销充值吗？本操作将会删除当前充值记录，并扣减会员【${scope.row.memberName}】余额【${formattedValue}】！`
+    );
+    await tableRef.value?.search();
+  };
   // 导出用户列表
   const downloadFile = async () => {
     ElMessageBox.confirm("确认导出充值列表吗?", "温馨提示", { type: "warning" }).then(() =>

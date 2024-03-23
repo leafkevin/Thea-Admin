@@ -8,18 +8,33 @@
       <el-form-item label="会员手机号" prop="mobile">
         <el-input v-model="ruleForm.mobile" disabled />
       </el-form-item>
-      <el-form-item label="上次余额" prop="balance">
-        <el-input v-model="ruleForm.balance" disabled>
+      <el-form-item :label="beginBalanceLabel" prop="beginBalance">
+        <el-input v-model="ruleForm.beginBalance" disabled>
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
       <el-form-item label="充值金额" prop="amount">
-        <el-input v-model="ruleForm.amount" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
+        <el-input
+          v-model="ruleForm.amount"
+          placeholder="请输入充值余额，必填，并且>0"
+          @focus="parseNumber('amount')"
+          @blur="formatText('amount')"
+          @change="changeAmount">
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
       <el-form-item label="赠送金额" prop="bonus">
-        <el-input v-model="ruleForm.bonus" placeholder="请输入赠送余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
+        <el-input
+          v-model="ruleForm.bonus"
+          placeholder="请输入赠送余额，必填，并且>0"
+          @focus="parseNumber('bonus')"
+          @blur="formatText('bonus')"
+          @change="changeAmount">
+          <template #prepend>¥</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="充值后余额" prop="endBalance">
+        <el-input v-model="ruleForm.endBalance" disabled>
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
@@ -40,12 +55,13 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref, onActivated } from "vue";
+  import { reactive, ref, onActivated, computed } from "vue";
   import { useRoute, useRouter } from "vue-router";
-  import { checkPhoneNumber } from "@/utils/eleValidate";
   import type { FormInstance, FormRules } from "element-plus";
   import { ElNotification } from "element-plus";
-  import { IDepositState, createDeposit, exportDeposits } from "@/api/deposit";
+  import { IDepositState, getDeposit, createDeposit, modifyDeposit } from "@/api/deposit";
+  import { IMemberState, getMember } from "@/api/member";
+
   import { useTabPageStore } from "@/stores/tabPages";
 
   defineOptions({
@@ -57,21 +73,55 @@
   const currentRoute = useRoute();
   const router = useRouter();
   const tabPageStore = useTabPageStore();
-  const memberId = history.state.id as string;
+  const id = history.state.id as string;
+  const from = history.state.from as number;
+  const isEdit = computed(() => (history.state.mode as string) === "Edit");
+  const beginBalanceLabel = computed(() => (isEdit.value ? "充值前余额" : "当前余额"));
 
   const ruleForm = reactive<IDepositState>({
-    memberId: memberId,
+    depositId: "",
+    memberId: "",
     memberName: "",
     mobile: "",
-    balance: "0.00",
+    beginBalance: "0.00",
     amount: "0.00",
     bonus: "0.00",
+    endBalance: "0.00",
     description: ""
   });
   onActivated(async () => {
-    if (memberId && memberId.length > 0) {
-      loading.value = true;
-      const response = await getMember(memberId);
+    loading.value = true;
+    if (isEdit.value) {
+      const response = await getDeposit(id);
+      if (!response.isSuccess) {
+        loading.value = false;
+        ElNotification({
+          title: "获取充值信息失败",
+          message: `${response.message}，code:${response.code}`,
+          type: "error"
+        });
+        return;
+      }
+      const depositState = response.data as IDepositState;
+      ruleForm.depositId = depositState.depositId;
+      ruleForm.memberId = depositState.memberId;
+      ruleForm.memberName = depositState.memberName;
+      ruleForm.mobile = depositState.mobile;
+      ruleForm.beginBalance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        depositState.beginBalance as number
+      );
+      ruleForm.amount = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        depositState.amount as number
+      );
+      ruleForm.bonus = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        depositState.bonus as number
+      );
+      ruleForm.endBalance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        depositState.endBalance as number
+      );
+      ruleForm.description = depositState.description;
+    } else {
+      const response = await getMember(id);
       if (!response.isSuccess) {
         loading.value = false;
         ElNotification({
@@ -85,34 +135,27 @@
       ruleForm.memberId = memberState.memberId as string;
       ruleForm.memberName = memberState.memberName;
       ruleForm.mobile = memberState.mobile;
-      ruleForm.gender = memberState.gender;
-      ruleForm.balance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+      const beginBalance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
         memberState.balance as number
       );
-      ruleForm.description = memberState.description;
-    } else {
-      ruleForm.memberId = "";
-      ruleForm.memberName = "";
-      ruleForm.mobile = "";
-      ruleForm.gender = 0;
-      ruleForm.balance = "0.00";
+      ruleForm.beginBalance = beginBalance;
+      ruleForm.amount = "0.00";
+      ruleForm.bonus = "0.00";
+      ruleForm.endBalance = beginBalance;
       ruleForm.description = "";
     }
     loading.value = false;
   });
   const rules = reactive<FormRules>({
-    memberName: [{ required: true, message: "请输入会员名称", trigger: "blur" }],
-    mobile: [{ required: true, validator: checkPhoneNumber, trigger: "blur" }],
-    balance: [{ required: true, message: "请输入充值余额，必填，并且>0", trigger: "blur" }]
+    amount: [{ required: true, message: "请输入充值余额，必填，并且>0", trigger: "blur" }]
   });
-
   const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return;
     await formEl.validate(async (valid, fields) => {
       if (valid) {
         let response;
-        if (memberId && memberId.length > 0) response = await modifyMember(ruleForm);
-        else response = await createMember(ruleForm);
+        if (isEdit.value) response = await modifyDeposit(ruleForm);
+        else response = await createDeposit(ruleForm);
         if (!response.isSuccess) {
           ElNotification({
             title: "操作失败",
@@ -121,10 +164,10 @@
           });
         }
         tabPageStore.removeTabPage(currentRoute.fullPath);
-        router.push({ name: "MemberList", replace: true });
+        router.push({ name: "DepositList", replace: true });
         ElNotification({
           title: "操作成功",
-          message: `操作成功，返回会员列表`,
+          message: "操作成功，返回列表页面",
           type: "success",
           duration: 3000
         });
@@ -133,18 +176,41 @@
       }
     });
   };
-  const parseNumber = () => {
-    const formattedValue = ruleForm.balance.toString();
-    ruleForm.balance = formattedValue.replace(/\$\s?|(,*)/g, "");
+  const parseNumber = source => {
+    if (source === "amount") {
+      const formattedValue = ruleForm.amount.toString();
+      ruleForm.amount = formattedValue.replace(/\$\s?|(,*)/g, "").replace(".00", "");
+    } else {
+      const formattedValue = ruleForm.bonus.toString();
+      ruleForm.bonus = formattedValue.replace(/\$\s?|(,*)/g, "").replace(".00", "");
+    }
   };
-  const formatText = () => {
-    const formattedValue = ruleForm.balance.toString();
-    const orgiValue = parseFloat(formattedValue);
-    ruleForm.balance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(orgiValue);
+  const formatText = source => {
+    if (source === "amount") {
+      const formattedValue = ruleForm.amount.toString();
+      const orgiValue = parseFloat(formattedValue);
+      ruleForm.amount = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(orgiValue);
+    } else {
+      const formattedValue = ruleForm.bonus.toString();
+      const orgiValue = parseFloat(formattedValue);
+      ruleForm.bonus = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(orgiValue);
+    }
+  };
+  const changeAmount = () => {
+    const formattedBeginBalance = ruleForm.beginBalance.toString();
+    const beginBalance = parseFloat(formattedBeginBalance.replace(/\$\s?|(,*)/g, ""));
+    const formattedAmount = ruleForm.amount.toString();
+    const amount = parseFloat(formattedAmount.replace(/\$\s?|(,*)/g, ""));
+    const formattedBonus = ruleForm.bonus.toString();
+    const bonus = parseFloat(formattedBonus.replace(/\$\s?|(,*)/g, ""));
+    ruleForm.endBalance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+      beginBalance + amount + bonus
+    );
   };
   const goBack = () => {
     tabPageStore.removeTabPage(currentRoute.fullPath);
-    router.push({ name: "MemberList" });
+    if (from == 1) router.push({ name: "MemberList" });
+    else router.push({ name: "DepositList" });
   };
 </script>
 <style scoped lang="scss">

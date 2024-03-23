@@ -30,6 +30,7 @@
       <!-- 菜单操作 -->
       <template #operation="scope">
         <el-button type="primary" link :icon="EditPen" @click="modifyMember(scope)"> 编辑 </el-button>
+        <el-button type="primary" link :icon="CreditCard" @click="createDeposit(scope)"> 充值 </el-button>
         <el-button type="danger" link :icon="Delete" @click="deleteMember(scope)"> 删除 </el-button>
       </template>
     </ProTable>
@@ -40,7 +41,7 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import { IColumnProps, ProTableInstance } from "@/components/ProTable/interface";
-  import { Delete, EditPen, CirclePlus, Upload, Download } from "@element-plus/icons-vue";
+  import { Delete, EditPen, CirclePlus, CreditCard, Upload, Download } from "@element-plus/icons-vue";
   import ProTable from "@/components/ProTable/index.vue";
   import { useRouter } from "vue-router";
   import { useHandleData } from "@/hooks/useHandleData";
@@ -101,10 +102,20 @@
   ];
   // 新增会员信息
   const createMember = () => {
-    router.push({ name: "MemberEdit", state: { id: "" } });
+    router.push({ name: "MemberEdit", state: { id: "", mode: "Create" } });
+  };
+  //编辑会员信息
+  const createDeposit = scope => {
+    router.push({ name: "DepositEdit", state: { id: scope.row.memberId, mode: "Create", from: 1 } });
+  };
+  const modifyMember = scope => router.push({ name: "MemberEdit", state: { id: scope.row.memberId, mode: "Edit" } });
+  // 删除会员信息
+  const deleteMember = async scope => {
+    await useHandleData(deleteMemberApi, { id: scope.row.memberId }, `确定要删除【${scope.row.memberName}】`);
+    await tableRef.value?.search();
   };
   // 批量添加用户
-  const dialogRef = ref<InstanceType<typeof ImportExcel> | null>(null);
+  const dialogRef = ref<InstanceType<typeof ImportExcel>>();
   const batchImport = () => {
     const params = {
       title: "会员批量导入",
@@ -115,13 +126,6 @@
       getTableList: tableRef.value?.getTableList
     };
     dialogRef.value?.acceptParameters(params);
-  };
-
-  const modifyMember = scope => router.push({ name: "MemberEdit", state: { id: scope.row.memberId } });
-  // 删除会员信息
-  const deleteMember = async scope => {
-    await useHandleData(deleteMemberApi, { id: scope.row.memberId }, `删除【${scope.row.memberName}】用户`);
-    await tableRef.value?.search();
   };
   // 批量删除用户信息
   const batchDelete = async (ids: string[]) => {

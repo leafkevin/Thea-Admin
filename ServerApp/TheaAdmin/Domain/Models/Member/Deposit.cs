@@ -38,7 +38,7 @@ public class Deposit
     /// <summary>
     /// 状态
     /// </summary>
-    public sbyte Status { get; set; }
+    public DataStatus Status { get; set; }
     /// <summary>
     /// 创建人
     /// </summary>

@@ -16,7 +16,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="余额" prop="balance" v-if="isEdit">
-        <el-input v-model="ruleForm.balance" placeholder="请输入充值余额，必填，并且>0" @focus="parseNumber" @blur="formatText">
+        <el-input v-model="ruleForm.balance" disabled>
           <template #prepend>¥</template>
         </el-input>
       </el-form-item>
@@ -55,8 +55,8 @@
   const router = useRouter();
   const tabPageStore = useTabPageStore();
   const memberId = history.state.id as string;
+  const isEdit = computed(() => (history.state.mode as string) === "Edit");
 
-  const isEdit = computed(() => memberId && memberId.length > 0);
   const ruleForm = reactive<IMemberState>({
     memberId: memberId,
     memberName: "",
@@ -66,7 +66,7 @@
     description: ""
   });
   onActivated(async () => {
-    if (memberId && memberId.length > 0) {
+    if (isEdit.value) {
       loading.value = true;
       const response = await getMember(memberId);
       if (!response.isSuccess) {
@@ -108,7 +108,7 @@
     await formEl.validate(async (valid, fields) => {
       if (valid) {
         let response;
-        if (memberId && memberId.length > 0) response = await modifyMember(ruleForm);
+        if (isEdit.value) response = await modifyMember(ruleForm);
         else response = await createMember(ruleForm);
         if (!response.isSuccess) {
           ElNotification({
@@ -129,15 +129,6 @@
         console.log("error submit!", fields);
       }
     });
-  };
-  const parseNumber = () => {
-    const formattedValue = ruleForm.balance.toString();
-    ruleForm.balance = formattedValue.replace(/\$\s?|(,*)/g, "");
-  };
-  const formatText = () => {
-    const formattedValue = ruleForm.balance.toString();
-    const orgiValue = parseFloat(formattedValue);
-    ruleForm.balance = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(orgiValue);
   };
   const goBack = () => {
     tabPageStore.removeTabPage(currentRoute.fullPath);
