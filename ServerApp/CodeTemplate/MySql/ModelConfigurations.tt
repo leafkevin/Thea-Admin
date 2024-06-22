@@ -31,19 +31,20 @@ class ModelConfiguration : IModelConfiguration
     public void OnModelCreating(ModelBuilder builder)
     {
 <#
-    var connectionString = "Server=127.0.0.1;Database=fengling;Uid=sa;password=SQLserverSA123456;TrustServerCertificate=true";
-    var dbProvider = new SqlServerProvider(connectionString);  
+    var connectionString = "Server=localhost;Database=salon;Uid=root;password=123456;charset=utf8mb4;";
+    var dbProvider = new MySqlProvider(connectionString);
 
-    var tableFilter = "sys_";
-    var removePrefixs = new []{"sys_"};
+    var databaseName = "salon";
+    var tableFilter = "";
+    var removePrefixs = new []{"sys_","mos_"};
     var separator = '_';
 
-    var tableList = dbProvider.GetTableList(tableFilter);
+    var tableList = dbProvider.GetTableList(databaseName, tableFilter);
     foreach(var tableInfo in tableList)
     {
         var tableName = tableInfo.TableName;
         var className = dbProvider.ToClassName(tableName, removePrefixs, separator);
-	    var columnList = dbProvider.GetColumnList(tableName);
+        var columnList = dbProvider.GetColumnList(databaseName, tableName); 
 #>
         builder.Entity<<#=className#>>(f =>
         {
@@ -96,4 +97,4 @@ class ModelConfiguration : IModelConfiguration
     }
 }
 <#@ include file="$(ProjectDir)\DbEntitries.ttinclude" once="true"#>
-<#@ include file="SqlServerProvider.ttinclude" once="true"#>
+<#@ include file="MySqlProvider.ttinclude" once="true"#>
