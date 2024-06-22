@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System;
 using Thea;
 using Trolley;
+using Trolley.MySqlConnector;
 
 namespace TheaAdmin.Domain.Services;
 

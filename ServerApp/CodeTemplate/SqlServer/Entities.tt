@@ -22,14 +22,14 @@
 <#@ import namespace="Microsoft.VisualStudio.TextTemplating"#>
 <#@ output encoding="utf-8" #>
 <#
-    var connectionString = "Server=172.18.50.8;Database=PlayerAuctions;Uid=PALite2008;password=pe846$qH3#;TrustServerCertificate=true";
+    var connectionString = "Server=127.0.0.1;Database=fengling;Uid=sa;password=SQLserverSA123456;TrustServerCertificate=true";
 	var dbProvider = new SqlServerProvider(connectionString);
     var manager = Manager.Create(Host, GenerationEnvironment);
 
-    var tableFilter = "Order";
+    var tableFilter = "sys_";
     var removePrefix = "sys_";
     var separator = '_';
-	var tableList = dbProvider.GetTableList(tableFilter);    
+    var tableList = dbProvider.GetTableList(tableFilter);    
     foreach(var tableInfo in tableList)
     {
         var className = dbProvider.ToClassName(tableInfo.TableName, removePrefix, separator);
@@ -38,7 +38,7 @@
 #>
 using System;
 
-namespace Account.Domain.Models;
+namespace Thea.Domain.Models;
 
 /// <summary>
 /// <#=tableInfo.Description#>
@@ -47,7 +47,7 @@ public class <#=className#>
 {
 <#foreach(ColumnInfo columnInfo in columnList){
 var propertyName = columnInfo.ColumnName;
-var propertyType = dbProvider.MapMemberType(columnInfo.DataType);
+var memberInfo = dbProvider.MapMember(columnInfo);
 if(!String.IsNullOrEmpty(columnInfo.Description))
 {#>
     /// <summary>
@@ -56,7 +56,7 @@ if(!String.IsNullOrEmpty(columnInfo.Description))
 <#}#>
 <#if(columnInfo.IsPrimaryKey){#>
 <#}#>
-    public <#=propertyType#> <#=propertyName#> { get; set; }
+    public <#=memberInfo.MemberType#> <#=propertyName#> { get; set; }
 <#}#>
 }
 <#

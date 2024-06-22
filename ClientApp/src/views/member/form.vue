@@ -99,8 +99,7 @@
   });
   const rules = reactive<FormRules>({
     memberName: [{ required: true, message: "请输入会员名称", trigger: "blur" }],
-    mobile: [{ required: true, validator: checkPhoneNumber, trigger: "blur" }],
-    balance: [{ required: true, message: "请输入充值余额，必填，并且>0", trigger: "blur" }]
+    mobile: [{ required: true, validator: checkPhoneNumber, trigger: "blur" }]
   });
 
   const submitForm = async (formEl: FormInstance | undefined) => {

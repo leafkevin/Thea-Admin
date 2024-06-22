@@ -10,6 +10,7 @@ using TheaAdmin.Domain.Models;
 using TheaAdmin.Domain.Services;
 using TheaAdmin.Dtos;
 using Trolley;
+using Trolley.MySqlConnector;
 
 namespace TheaAdmin.Controllers;
 

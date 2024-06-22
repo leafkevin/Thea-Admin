@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Thea;
 using TheaAdmin.Domain.Models;
 using TheaAdmin.Domain.Services;
 using TheaAdmin.Dtos;
-using System.Threading.Tasks;
-using Thea;
 using Trolley;
+using Trolley.MySqlConnector;
 
 namespace TheaAdmin.Controllers;
 

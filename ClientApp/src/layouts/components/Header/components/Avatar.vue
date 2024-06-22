@@ -5,7 +5,7 @@
     </div>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item @click="openDialog('infoRef')">
+        <el-dropdown-item @click="goProfile">
           <el-icon><User /></el-icon>{{ $t("header.personalData") }}
         </el-dropdown-item>
         <el-dropdown-item @click="openDialog('passwordRef')">
@@ -17,8 +17,6 @@
       </el-dropdown-menu>
     </template>
   </el-dropdown>
-  <!-- infoDialog -->
-  <InfoDialog ref="infoRef"></InfoDialog>
   <!-- passwordDialog -->
   <PasswordDialog ref="passwordRef"></PasswordDialog>
 </template>
@@ -61,6 +59,9 @@
   const openDialog = (ref: string) => {
     if (ref == "infoRef") infoRef.value?.openDialog();
     if (ref == "passwordRef") passwordRef.value?.openDialog();
+  };
+  const goProfile = () => {
+    router.push({ name: "Profile" });
   };
 </script>
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using TheaAdmin.Domain;
 using TheaAdmin.Domain.Services;
 using Trolley;
@@ -8,12 +9,13 @@ namespace TheaAdmin;
 
 public static class Startup
 {
-    public static void AddDomainServices(this IServiceCollection services)
+    public static void AddDomainServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton(f =>
         {
+            var connectionString = configuration["ConnectionStrings:default"];
             var builder = new OrmDbFactoryBuilder()
-            .Register<MySqlProvider>("salon", "Server=localhost;Database=salon;Uid=root;password=123456;charset=utf8mb4", true)
+            .Register<MySqlProvider>("default", connectionString, true)
             .Configure<MySqlProvider, ModelConfiguration>();
             return builder.Build();
         });
