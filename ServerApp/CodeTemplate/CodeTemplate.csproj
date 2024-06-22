@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-	<LangVersion>8.0</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ProjectGuid>{82E8F0F0-484A-4D4D-B61F-A968FAE2F9FD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>CodeTemplate</RootNamespace>
@@ -51,6 +51,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Entities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MySql\ModelConfigurations.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelConfigurations.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
